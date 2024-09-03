@@ -1,0 +1,31 @@
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "New Food", menuName = "Item/Food")]
+public class Food : ItemData, IUsable
+{
+
+    // Можно сделать компонент отравления, который будет находить на своем объекте ICanBePoisoning и делать isPoisoning и делать тру
+
+    [Header("Food Settings")]
+    [SerializeField] private float saturation;
+    [SerializeField] private float treatment;
+    [SerializeField] private float rest;
+    [SerializeField] private bool isPoisoning;
+    [SerializeField] private float poisonTime;
+    [SerializeField] private bool isShouldBeFried;
+    [SerializeField] private bool isFried;
+
+    public void Use()
+    {
+        if (isPoisoning)
+        {
+            //PlayerStats.Instance.CmdPoison(poisonTime);
+            return;
+        }
+
+        //возможно следует передавать id предмета и там уже чики пуки спокен пуки
+        Player.Instance.FoodSystem.CmdAddFood(isShouldBeFried && !isFried ? saturation / 3 : saturation);
+        Player.Instance.HealthSystem.CmdHeal(isShouldBeFried && !isFried ? treatment / 3 : treatment);
+        Player.Instance.StaminaSystem.CmdAddStamina(isShouldBeFried && !isFried ? rest / 3 : rest);
+    }
+}
