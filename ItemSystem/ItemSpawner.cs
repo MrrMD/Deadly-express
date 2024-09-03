@@ -72,6 +72,8 @@ public class ItemSpawner : NetworkBehaviour
         for(int i  = 0; i < count; i++)
         {
             // Спавн префаба на сервере
+
+            Debug.Log(data + " " + count + " " + position);
             GameObject itemInstance = Instantiate(data.ItemPrefab, position + Vector3.down * (i * 0.1f), data.ItemPrefab.transform.rotation);
 
             // Спавн на всех клиентах

@@ -24,27 +24,25 @@ public class Player : NetworkBehaviour, IEntity
 
     public Inventory Inventory { get => inventory;}
 
-    private void Awake()
+    public override void OnStartClient()
     {
         if (!isLocalPlayer)
         {
             return;
         }
 
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.OnStartClient();
 
         inventory = GetComponent<Inventory>();
 
         healthSystem = GetComponent<HealthSystem>();
         staminaSystem = GetComponent<StaminaSystem>();
         foodSystem = GetComponent<FoodSystem>();
+    }
+
+    private void Awake()
+    {
+        
     }
 
     public HealthSystem HealthSystem { get => healthSystem;}

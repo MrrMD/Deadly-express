@@ -25,13 +25,15 @@ public class ItemDropZone : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
 
-        if (eventData.pointerDrag.GetComponent<UIInventoryItem>() == null)
+        if (eventData.pointerDrag.GetComponent<UIInventoryItem>() == null 
+            || eventData.pointerDrag.GetComponent<UIInventoryLootItem>() != null)
         {
             return;
         }
-
+        
         dragItem = eventData.pointerDrag.GetComponent<UIInventoryItem>();
         Inventory inventory = identity.GetComponent<Inventory>();
+
 
         MakeItemNotVisible();
 

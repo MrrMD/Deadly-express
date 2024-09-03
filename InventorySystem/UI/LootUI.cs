@@ -73,7 +73,6 @@ public class LootUI : MonoBehaviour
 
     public void UpdateInventoryItems(List<InventoryItem> inventory)
     {
-        Debug.Log($"UI Update inventory count: {inventory.Count}");
 
         foreach (Transform child in inventoryPanel.transform)
         {
