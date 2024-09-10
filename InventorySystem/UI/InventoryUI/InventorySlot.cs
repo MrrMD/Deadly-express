@@ -33,6 +33,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         }
     }
 
+
     private void LootIteract(PointerEventData eventData)
     {
         dragItem = eventData.pointerDrag.GetComponent<UIInventoryItem>();
@@ -53,11 +54,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
-                    inventory.addItemFromChestForIndex(int.Parse(dragItem.name), int.Parse(gameObject.name));
+                    inventory.CmdAddItemFromChestForIndex(int.Parse(dragItem.name), int.Parse(gameObject.name), 0);
                 }
-                else
+                else if(eventData.button == PointerEventData.InputButton.Right) 
                 {
-                    
+                    inventory.CmdAddItemFromChestForIndex(int.Parse(dragItem.name), int.Parse(gameObject.name), 1);
                 }
             }
             else
@@ -101,6 +102,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
         }
     }
+
     //что бы убрать лаг при перемещении
     private void MakeItemNotVisible()
     {

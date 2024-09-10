@@ -23,9 +23,8 @@ public class Food : ItemData, IUsable
             return;
         }
 
-        //возможно следует передавать id предмета и там уже чики пуки спокен пуки
-        Player.Instance.FoodSystem.CmdAddFood(isShouldBeFried && !isFried ? saturation / 3 : saturation);
-        Player.Instance.HealthSystem.CmdHeal(isShouldBeFried && !isFried ? treatment / 3 : treatment);
-        Player.Instance.StaminaSystem.CmdAddStamina(isShouldBeFried && !isFried ? rest / 3 : rest);
+        //Player.Instance.FoodSystem.CmdAddFood(isShouldBeFried && !isFried ? saturation / 3 : saturation);
+        //Player.Instance.HealthSystem.CmdHeal(isShouldBeFried && !isFried ? treatment / 3 : treatment);
+        //Player.Instance.StaminaSystem.CmdAddStamina(isShouldBeFried && !isFried ? rest / 3 : rest);
     }
 }

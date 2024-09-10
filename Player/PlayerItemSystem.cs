@@ -6,10 +6,11 @@ public class PlayerItemSystem : NetworkBehaviour
 {
     [SerializeField] private Player player;
     [SerializeField] private ItemData activeItem;
+    [SerializeField] private Inventory inventory;   
 
     private void Start()
     {
-        player = Player.Instance;
+        inventory = GetComponent<Inventory>();
     }
 
     public ItemData ActiveItem
@@ -32,4 +33,10 @@ public class PlayerItemSystem : NetworkBehaviour
     {
         player.Inventory.CmdAddItem(takenItem);
     }
+
+    public void PutItemToChest(int itemIndex, int slotIndex, int count)
+    {
+        inventory.CmdPutItemToChest(itemIndex, slotIndex, count); 
+    }
+
 }

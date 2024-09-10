@@ -5,7 +5,6 @@ using UnityEngine;
 public class InventoryItem
 {
     [SerializeField] private ItemData itemData = null;
-
     [SerializeField] private string itemName = "Item";
     [SerializeField] private int count = 0; // Количество предметов
 

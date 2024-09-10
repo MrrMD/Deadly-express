@@ -1,4 +1,3 @@
-using Mirror;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,12 +8,15 @@ public class LootUI : MonoBehaviour
     public static LootUI Instance { get; private set; }
 
     [SerializeField] private GameObject lootPanel;
-    [SerializeField] private GameObject UIInventorySlotPrefab;
-    [SerializeField] private GameObject UIInventoryItemPrefab;
-    [SerializeField] private GameObject inventoryPanel; 
-    [SerializeField] private GameObject inventoryLootItemPrefab; 
+    [SerializeField] private GameObject InventorySlotPrefab;
+    [SerializeField] private GameObject InventoryItemPrefab;
+    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private GameObject inventoryLootSlotPrefab;
+    [SerializeField] private GameObject inventoryLootItemPrefab;
+    [SerializeField] private bool lootUiIsOpen = false;
 
     private Inventory lootingInventory;
+    public Inventory LootingInventory { get => lootingInventory; }
 
     private void Awake()
     {
@@ -36,21 +38,27 @@ public class LootUI : MonoBehaviour
     public void Open(Inventory inventory)
     {
         Debug.Log("Loot UI open");
+        lootUiIsOpen = true;
 
-        this.lootingInventory = inventory;
-
+        lootingInventory = inventory;
         lootPanel.SetActive(true);
         UpdateLootItems();
+        inventory.OnInventoryChangedEvent += UpdateLootItems;
     }
 
     public void Close()
     {
+        lootingInventory.OnInventoryChangedEvent -= UpdateLootItems;
+        lootUiIsOpen = false;
         lootPanel.SetActive(false);
         lootingInventory = null;
     }
 
     public void UpdateLootItems()
     {
+        if (!lootUiIsOpen) return;
+        Debug.Log("Update loot items");
+
         foreach (Transform child in lootPanel.transform)
         {
             Destroy(child.gameObject);
@@ -59,7 +67,8 @@ public class LootUI : MonoBehaviour
         List<InventoryItem> lootItems = lootingInventory.GetAllItems();
         for (int i = 0; i < lootItems.Count; i++)
         {
-            GameObject lootItemSlot = Instantiate(UIInventorySlotPrefab, lootPanel.transform);
+            GameObject lootItemSlot = Instantiate(inventoryLootSlotPrefab, lootPanel.transform);
+            lootItemSlot.name = i.ToString();   
             GameObject lootItem = Instantiate(inventoryLootItemPrefab, lootItemSlot.transform);
             lootItem.name = i.ToString();
             lootItem.GetComponentInChildren<TextMeshProUGUI>().text = lootItems[i].Count.ToString();
@@ -73,7 +82,6 @@ public class LootUI : MonoBehaviour
 
     public void UpdateInventoryItems(List<InventoryItem> inventory)
     {
-
         foreach (Transform child in inventoryPanel.transform)
         {
             Destroy(child.gameObject);
@@ -81,9 +89,9 @@ public class LootUI : MonoBehaviour
 
         for(int i = 0; i < inventory.Count; i++)
         {
-            GameObject inventorySlot = Instantiate(UIInventorySlotPrefab, inventoryPanel.transform);
+            GameObject inventorySlot = Instantiate(InventorySlotPrefab, inventoryPanel.transform);
             inventorySlot.name = i.ToString();
-            GameObject inventoryItem = Instantiate(UIInventoryItemPrefab, inventorySlot.transform);
+            GameObject inventoryItem = Instantiate(InventoryItemPrefab, inventorySlot.transform);
             inventoryItem.name = i.ToString();
             //inventoryItem.GetComponent<Image>().sprite = item.ItemIcon;
             if (inventory[i].ItemName == "Item")
@@ -94,5 +102,4 @@ public class LootUI : MonoBehaviour
             inventoryItem.GetComponentInChildren<TextMeshProUGUI>().text = inventory[i].Count.ToString();
         }
     }
-
 }

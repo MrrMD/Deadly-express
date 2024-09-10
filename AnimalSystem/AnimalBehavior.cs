@@ -79,7 +79,7 @@ public class AnimalBehavior : NetworkBehaviour
     [Command]
     private void CmdAttackPlayer(Player targetPlayer)
     {
-        Player.Instance.HealthSystem.CmdTakeDamage(animal.AtackValue);
+        //Player.Instance.HealthSystem.CmdTakeDamage(animal.AtackValue);
     }
 
     public void Aggro()

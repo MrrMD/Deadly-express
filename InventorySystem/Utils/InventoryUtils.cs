@@ -5,7 +5,7 @@ namespace Utils
     {
         public static float chestDetectionRadius = 2.0f; 
 
-        public static Chest Find(Transform transform)
+        public static Chest FindNearbyChest(Transform transform)
         {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, chestDetectionRadius);
 

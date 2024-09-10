@@ -17,6 +17,18 @@ public class Item : NetworkBehaviour
         this.count = count;
     }
 
+    public Item(InventoryItem inventoryItem)
+    {
+        this.itemData = inventoryItem.ItemData;
+        this.count = inventoryItem.Count;
+    }
+
+    public Item(Item item)
+    {
+        this.itemData = item.itemData;
+        this.count = item.count;
+    }
+
     public ItemData ItemData { get => itemData; set => itemData = value; }
     public int Count { get => count; set => count = value; }
 

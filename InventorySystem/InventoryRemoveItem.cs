@@ -41,7 +41,7 @@ public static class InventoryRemoveItem
         }
     }
 
-    public static void RemoveItemByIndex(Inventory inventory, int index, int count)
+    public static void RemoveItemByIndexAndSpawn(Inventory inventory, int index, int count)
     {
         if (count != 0)
         {

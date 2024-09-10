@@ -1,30 +1,32 @@
 using Mirror;
-using NUnit.Framework.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(InventoryAddItem))]
 public class Inventory : NetworkBehaviour
 {
+    public event Action OnInventoryChangedEvent;
+
     [SerializeField] public readonly SyncList<InventoryItem> inventory = new SyncList<InventoryItem>();
     [SerializeField] private int inventorySize = 6;
 
     public override void OnStartClient()
     {
+        inventory.OnChange += OnInventoryChanged;
+
         if (!isLocalPlayer)
         {
             return;
         }
+
         if (inventorySize == 0) inventorySize = 6;
 
         base.OnStartClient();
 
-        LootUI.Instance.UpdateInventoryItems(GetAllItems());
-
         InitializeEmptyInventory();
 
-        inventory.OnChange += OnInventoryChanged;
+        
     }
 
     [Command]
@@ -32,7 +34,7 @@ public class Inventory : NetworkBehaviour
     {
         for (int i = 0; i < inventorySize; i++)
         {
-            var item = new InventoryItem();
+            InventoryItem item = new InventoryItem();
             item.Count = 0;
             inventory.Add(item);
         }
@@ -46,9 +48,9 @@ public class Inventory : NetworkBehaviour
     }
 
     [Command]
-    public void CmdRemoveItemByIndex(int index, int count)
+    public void CmdRemoveItemByIndexAndSpawn(int index, int count)
     {
-        InventoryRemoveItem.RemoveItemByIndex(this, index, count);
+        InventoryRemoveItem.RemoveItemByIndexAndSpawn(this, index, count);
     }
 
     [Command] 
@@ -64,15 +66,21 @@ public class Inventory : NetworkBehaviour
     }
 
     [Command]
-    public void addItemFromChest(int itemIndex, int slotIndex)
+    public void CmdAddItemFromChest(int itemIndex, int slotIndex)
     {
-        InventoryAddItem.addItemFromChest(this, itemIndex, slotIndex);
+        InventoryAddItem.AddItemFromChest(this, itemIndex, slotIndex);
     }
 
     [Command]
-    public void addItemFromChestForIndex(int itemIndex, int slotIndex)
+    public void CmdAddItemFromChestForIndex(int itemIndex, int slotIndex, int count)
     {
-        InventoryAddItem.addItemFromChestForIndex(this, itemIndex, slotIndex); 
+        InventoryAddItem.AddItemFromChestForIndex(this, itemIndex, slotIndex, count); 
+    }
+
+    [Command]
+    public void CmdPutItemToChest(int itemIndex, int slotIndex, int count)
+    {
+        InventoryAddItem.AddItemToChestByIndex(this, itemIndex, slotIndex, count);
     }
 
     [Server]
@@ -89,7 +97,22 @@ public class Inventory : NetworkBehaviour
 
     private void OnInventoryChanged(SyncList<InventoryItem>.Operation operation, int arg2, InventoryItem item)
     {
+        Debug.Log("OnInventoryChanged");
+        OnInventoryChanged();
+    }
+
+    public void OnInventoryChanged()
+    {
+        if (GetComponent<Chest>() != null)
+        {
+            if (OnInventoryChangedEvent != null)
+            {
+                Debug.Log("Invoke");
+                OnInventoryChangedEvent.Invoke();
+            }
+        }
         if (!isLocalPlayer) return;
+
         UpdateInventoryUI();
     }
 
@@ -97,21 +120,22 @@ public class Inventory : NetworkBehaviour
     public void TargetRpcInventoryItemCountChange(int count, int index)
     {
         if (!isLocalPlayer) return;
+        Debug.Log("TargetRpcInventoryItemCountChange");
         inventory[index].Count = count;
         UpdateInventoryUI();
     }
 
-    [TargetRpc]
+    [ClientRpc]
     public void RpcInventoryLootUIUpdate()
     {
-        if (!isLocalPlayer) return;
+        Debug.Log("RpcInventoryLootUIUpdate");
         UpdateInventoryLootUI();
     }
 
     [TargetRpc]
     public void RpcUpdateInventoryUI()
     {
-        if (!isLocalPlayer) return;
+        Debug.Log("RpcUpdateInventoryUI");
         UpdateInventoryUI();
     }
 
@@ -134,5 +158,4 @@ public class Inventory : NetworkBehaviour
     {
         return $"Inventory Count: {inventory.Count}";
     }
-
 }

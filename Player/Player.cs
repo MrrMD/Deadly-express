@@ -9,8 +9,6 @@ using UnityEngine;
 [RequireComponent(typeof(FoodSystem))]
 public class Player : NetworkBehaviour, IEntity
 {
-    public static Player Instance { get; private set; }
-
     [SerializeField] private string player_name;
     [SerializeField] private Role role;
     [SerializeField] private bool isOffender;
@@ -38,11 +36,6 @@ public class Player : NetworkBehaviour, IEntity
         healthSystem = GetComponent<HealthSystem>();
         staminaSystem = GetComponent<StaminaSystem>();
         foodSystem = GetComponent<FoodSystem>();
-    }
-
-    private void Awake()
-    {
-        
     }
 
     public HealthSystem HealthSystem { get => healthSystem;}

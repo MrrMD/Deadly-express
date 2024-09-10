@@ -11,10 +11,10 @@ public class Medicament : ItemData, IUsable
     {
         if (isPoisoning)
         {
-            Player.Instance.gameObject.GetComponent<PlayerPoisonSystem>().Poison(poisonTime);
+            //Player.Instance.gameObject.GetComponent<PlayerPoisonSystem>().Poison(poisonTime);
             return;
         }
 
-        Player.Instance.HealthSystem.CmdHeal(treatment);
+        //Player.Instance.HealthSystem.CmdHeal(treatment);
     }
 }

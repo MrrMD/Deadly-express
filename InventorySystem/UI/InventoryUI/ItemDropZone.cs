@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ItemDropZone : MonoBehaviour, IDropHandler
 {
-    NetworkIdentity identity;
+    [SerializeField] NetworkIdentity identity;
     private UIInventoryItem dragItem;
 
     private void Start()
@@ -24,26 +24,31 @@ public class ItemDropZone : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        Inventory inventory = null;
 
-        if (eventData.pointerDrag.GetComponent<UIInventoryItem>() == null 
-            || eventData.pointerDrag.GetComponent<UIInventoryLootItem>() != null)
+        if (eventData.pointerDrag.GetComponent<UIInventoryLootItem>())
         {
             return;
         }
-        
+        else if (eventData.pointerDrag.GetComponent<UIInventoryItem>() != null 
+            && eventData.pointerDrag.GetComponent<UIInventoryLootItem>() == null)
+        {
+            inventory = identity.GetComponent<Inventory>();
+        }
+
         dragItem = eventData.pointerDrag.GetComponent<UIInventoryItem>();
-        Inventory inventory = identity.GetComponent<Inventory>();
+        int itemName = int.Parse(dragItem.name);
 
 
         MakeItemNotVisible();
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            inventory.CmdRemoveItemByIndex(int.Parse(dragItem.name), 1);
+            inventory.CmdRemoveItemByIndexAndSpawn(int.Parse(dragItem.name), 1);
         }
         else if (eventData.button == PointerEventData.InputButton.Left)
         {
-            inventory.CmdRemoveItemByIndex(int.Parse(dragItem.name), 0);
+            inventory.CmdRemoveItemByIndexAndSpawn(int.Parse(dragItem.name), 0);
         }
 
     }

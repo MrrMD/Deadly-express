@@ -2,6 +2,7 @@ using Mirror;
 using System.Linq;
 using UnityEngine;
 
+
 [System.Serializable]
 [RequireComponent(typeof(Inventory))]
 public class Chest : NetworkBehaviour
@@ -12,19 +13,19 @@ public class Chest : NetworkBehaviour
 
     [SerializeField] Inventory inventory = null;
 
+    public Inventory Inventory { get => inventory; set => inventory = value; }
     public override void OnStartServer()
     {
         base.OnStartServer();
-
-        if (isServer)
-        {
-            Debug.Log("Server");
-        }
 
         inventory = GetComponent<Inventory>();
         SpawnRandomLoot();
     }
 
+    private void Start()
+    {
+        inventory = GetComponent<Inventory>();
+    }
 
     public InventoryItem GetInventoryItemByIndex(int index)
     {
@@ -43,7 +44,8 @@ public class Chest : NetworkBehaviour
 
             if (item != null && inventory != null)
             {
-                Item currentItem = item.Item;
+                Item currentItem = new Item(item.Item);
+                currentItem.Count = Random.Range(minLootCount, maxLootCount + 1);
                 Debug.Log(currentItem.Count);
 
                 inventory.AddItemToChest(currentItem);
@@ -51,8 +53,6 @@ public class Chest : NetworkBehaviour
             }
         }
     }
-
-
 
     private ChestItem GetRandomItemFromLootList()
     {
@@ -70,4 +70,19 @@ public class Chest : NetworkBehaviour
         }
         return null;
     }
+
+    [ClientRpc]
+    public void RpcChestLootRemove(int index)
+    {
+        inventory.inventory[index].ItemName = "item";
+        inventory.inventory[index].Count = 0;
+    }
+
+    [ClientRpc]
+    public void RpcChestLootCountChange(int index, int count)
+    {
+        inventory.inventory[index].Count = count;
+        inventory.OnInventoryChanged();
+    }
+
 }
