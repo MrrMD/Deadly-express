@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class ItemDropZone : MonoBehaviour, IDropHandler
 {
     [SerializeField] NetworkIdentity identity;
-    private UIInventoryItem dragItem;
+    [SerializeField] private UIInventoryItem dragItem;
 
     private void Start()
     {
@@ -50,7 +50,6 @@ public class ItemDropZone : MonoBehaviour, IDropHandler
         {
             inventory.CmdRemoveItemByIndexAndSpawn(int.Parse(dragItem.name), 0);
         }
-
     }
 
     private void MakeItemNotVisible()
@@ -58,6 +57,5 @@ public class ItemDropZone : MonoBehaviour, IDropHandler
         Color color = dragItem.GetComponent<Image>().color;
         color.a = 0;
         dragItem.GetComponent<Image>().color = color;
-        dragItem.GetComponentInChildren<TextMeshProUGUI>().color = color;
     }
 }

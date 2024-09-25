@@ -41,7 +41,6 @@ public class Chest : NetworkBehaviour
         {
             ChestItem item = GetRandomItemFromLootList();
 
-
             if (item != null && inventory != null)
             {
                 Item currentItem = new Item(item.Item);
@@ -76,6 +75,7 @@ public class Chest : NetworkBehaviour
     {
         inventory.inventory[index].ItemName = "item";
         inventory.inventory[index].Count = 0;
+        inventory.OnInventoryChanged();
     }
 
     [ClientRpc]

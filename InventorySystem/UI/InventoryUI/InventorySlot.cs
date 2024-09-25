@@ -109,6 +109,5 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         Color color = dragItem.GetComponent<Image>().color;
         color.a = 0;
         dragItem.GetComponent<Image>().color = color;
-        dragItem.GetComponentInChildren<TextMeshProUGUI>().color = color;
     }
 }

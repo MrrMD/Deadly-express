@@ -50,7 +50,5 @@ public class UIInventoryLootSlot : MonoBehaviour, IDropHandler
         {
             identity.GetComponent<PlayerItemSystem>().PutItemToChest(inventoryItemIndex, int.Parse(gameObject.name), 1);
         }
-
     }
-
 }

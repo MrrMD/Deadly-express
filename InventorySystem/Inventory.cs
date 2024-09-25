@@ -25,8 +25,6 @@ public class Inventory : NetworkBehaviour
         base.OnStartClient();
 
         InitializeEmptyInventory();
-
-        
     }
 
     [Command]
@@ -66,9 +64,9 @@ public class Inventory : NetworkBehaviour
     }
 
     [Command]
-    public void CmdAddItemFromChest(int itemIndex, int slotIndex)
+    public void CmdAddItemFromChest(int itemIndex, int count)
     {
-        InventoryAddItem.AddItemFromChest(this, itemIndex, slotIndex);
+        InventoryAddItem.AddItemFromChest(this, itemIndex, count);
     }
 
     [Command]
@@ -78,7 +76,13 @@ public class Inventory : NetworkBehaviour
     }
 
     [Command]
-    public void CmdPutItemToChest(int itemIndex, int slotIndex, int count)
+    public void CmdPutItemToChest(int itemIndex, int count)
+    {
+        InventoryAddItem.AddItemToChest(this, itemIndex, count);
+    }
+
+    [Command]
+    public void CmdPutItemToChestByIndex(int itemIndex, int slotIndex, int count)
     {
         InventoryAddItem.AddItemToChestByIndex(this, itemIndex, slotIndex, count);
     }
@@ -141,7 +145,7 @@ public class Inventory : NetworkBehaviour
 
     public void UpdateInventoryLootUI()
     {
-        LootUI.Instance.UpdateLootItems();
+        LootUI.Instance.ShowLootItems();
     }
 
     public void UpdateInventoryUI()
@@ -154,6 +158,11 @@ public class Inventory : NetworkBehaviour
         return inventory.OfType<InventoryItem>().ToList();
     }
 
+    [TargetRpc]
+    public void RpcCloseLootUI()
+    {
+        LootUI.Instance.Close();
+    }
     public override string ToString()
     {
         return $"Inventory Count: {inventory.Count}";

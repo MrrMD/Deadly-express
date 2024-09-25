@@ -64,12 +64,10 @@ public class InventoryItem
             itemName = "Item";
             itemData = null;
         }
-
     }
 
     public override string ToString()
     {
         return $"Item: {itemName}, Count: {count}, ItemData{itemData}";
     }
-
 }

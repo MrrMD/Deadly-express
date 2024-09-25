@@ -1,5 +1,6 @@
+using System.Diagnostics;
 using Unity.Mathematics;
-using UnityEngine;
+
 
 public static class InventoryAddItem
 {
@@ -34,50 +35,58 @@ public static class InventoryAddItem
         }
     }
 
-    public static void AddItemFromChest(Inventory inventory, int itemIndex, int slotIndex)
+    public static void AddItemFromChest(Inventory inventory, int itemIndex, int count)
     {
-        int remainingCount = 0;
-
         Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
 
         if (chest == null) return;
 
         InventoryItem item = chest.GetInventoryItemByIndex(itemIndex);
-        chest = null;
-
         if (item == null) return;
+        int remainingCount = item.Count;
+        if (count != 0)
+        {
+            remainingCount = 1;
+        }
 
-        remainingCount = item.Count;
 
         foreach (var i in inventory.inventory)
         {
-            if (i.ItemName == "Item") continue;
-
-            if (i.ItemName == item.ItemName && i.HowMuchCanStack() != 0 && remainingCount != 0)
+            while (remainingCount > 0 && i.ItemName == item.ItemName && i.CanStack(1))
             {
-                var canStackCount = i.HowMuchCanStack();
-                var StackCount = math.min(canStackCount, item.Count);
-                Debug.Log(canStackCount);
-
-                i.IncreaseStack(StackCount);
-                item.DecreaseStack(StackCount);
-                inventory.RpcInventoryLootUIUpdate();
+                i.IncreaseStack(1);
+                remainingCount = remainingCount - 1;
                 inventory.TargetRpcInventoryItemCountChange(i.Count, inventory.inventory.IndexOf(i));
-                remainingCount = remainingCount - StackCount;
+            }
+            if (remainingCount == 0)
+            {
+                if(count != 0)
+                {
+                    chest.RpcChestLootCountChange(itemIndex, item.Count - 1);
+                    return;
+                }
+                else if(count == 0)
+                {
+                    chest.RpcChestLootRemove(itemIndex);
+                }
             }
         }
-        if (remainingCount != 0)
+
+        foreach (var i in inventory.inventory)
         {
-            foreach (var i in inventory.inventory)
+            if (i.ItemName == "Item" && remainingCount != 0)
             {
-                if (i.ItemName == "Item")
+                inventory.inventory[inventory.inventory.IndexOf(i)] = new InventoryItem(item.ItemData, item.ItemData.ItemName, remainingCount);
+                remainingCount = 0;
+                if(count == 0)
                 {
-                    inventory.inventory[inventory.inventory.IndexOf(i)] = new InventoryItem(item);
-                    item.DecreaseStack(item.Count);
-                    inventory.RpcInventoryLootUIUpdate();
-                    remainingCount = 0;
-                    break;
+                    chest.RpcChestLootRemove(itemIndex);
                 }
+                else if(count == 1)
+                {
+                    chest.RpcChestLootCountChange(itemIndex, item.Count - 1);
+                }
+
             }
         }
     }
@@ -189,6 +198,73 @@ public static class InventoryAddItem
             chest.RpcChestLootCountChange(slotIndex, chest.Inventory.inventory[slotIndex].Count);
             inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
             remainingCount = remainingCount - stackCount;
+        }
+    }
+
+    public static void AddItemToChest(Inventory inventory, int itemIndex, int count)
+    {
+        int remainingCount = 0;
+
+        Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
+
+        if (chest == null) return;
+
+        Inventory chestInventory = chest.Inventory;
+
+        if (chestInventory == null) return;
+
+        InventoryItem inventoryitem = inventory.inventory[itemIndex];    
+
+        remainingCount = inventoryitem.Count;
+
+        if (count != 0) remainingCount = 1; ;   
+        
+        for (int i = 0; i < chestInventory.inventory.Count; i++)
+        {
+            if (inventoryitem.ItemName == chestInventory.inventory[i].ItemName && chestInventory.inventory[i].HowMuchCanStack() != 0 && remainingCount != 0)
+            {
+                var canStackCount = chest.Inventory.inventory[i].HowMuchCanStack();
+                var stackCount = math.min(canStackCount, inventoryitem.Count);
+
+                if (count != 0 && stackCount != 0)
+                {
+                    stackCount = 1;
+                }
+
+                chestInventory.inventory[i].IncreaseStack(stackCount);
+                inventoryitem.DecreaseStack(stackCount);
+                chest.RpcChestLootCountChange(i, chestInventory.inventory[i].Count);
+                inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
+                remainingCount = remainingCount - stackCount;
+
+                if (remainingCount == 0) return;
+            }
+        }
+
+        if(remainingCount == 0) return;
+
+        for (int i = 0; i < chestInventory.inventory.Count; i++)
+        {
+            if (chestInventory.inventory[i].ItemName == "Item" )
+            {
+                chestInventory.inventory[i] = new InventoryItem(inventoryitem);
+
+                if (count != 0)
+                {
+                    chestInventory.inventory[i].Count = count;
+                    inventoryitem.DecreaseStack(count);
+                    chestInventory.OnInventoryChanged();
+                    inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
+                    return;
+                }
+                else if (count == 0)
+                {
+                    inventoryitem.DecreaseStack(inventoryitem.Count);
+                    inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
+                    chestInventory.OnInventoryChanged();
+                    return;
+                }
+            }
         }
     }
 }

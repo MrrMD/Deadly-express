@@ -5,6 +5,11 @@ using UnityEngine;
 public class LootingSystem : NetworkBehaviour
 {
     [SerializeField] Inventory curentInventory;
+    [SyncVar]
+    [SerializeField] private bool isLooted = false;
+    [SyncVar]
+    [SerializeField] private uint isLootedPlayerId;
+    [SerializeField] private SphereCollider playerExitTrigerCollider;
 
     public override void OnStartClient()
     {
@@ -15,19 +20,54 @@ public class LootingSystem : NetworkBehaviour
 
         base.OnStartClient();
 
+    }
+
+    private void Start()
+    {
+        playerExitTrigerCollider = GetComponent<SphereCollider>();
         curentInventory = GetComponent<Inventory>();
     }
 
-    public void GetLooted()
+    public void GetLooted(uint identityId)
     {
+        if(isLooted) return;
         Debug.Log("Get looted");
-        curentInventory = GetComponent<Inventory>();
         if (GetComponent<HealthSystem>() != null && GetComponent<HealthSystem>().IsAlive)
         {
             Debug.Log("Get looted return");
             return;
         }
+        CmdSetLootingActive(identityId);
         LootUI.Instance.Open(curentInventory);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetLootingActive(uint identityId)
+    {
+        isLooted = true;
+        isLootedPlayerId = identityId;
+        playerExitTrigerCollider.enabled = true;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetLootingInactive()
+    {
+        NetworkIdentity playerIdentity = NetworkServer.spawned[isLootedPlayerId];
+        if (playerIdentity != null)
+        {
+            playerIdentity.GetComponent<Inventory>().RpcCloseLootUI();
+        }
+        isLootedPlayerId = 0;
+        isLooted = false;
+        playerExitTrigerCollider.enabled = false;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<NetworkIdentity>().netId == isLootedPlayerId)
+        {
+            CmdSetLootingInactive();
+        }
     }
 
     private void LootTo()
@@ -37,15 +77,15 @@ public class LootingSystem : NetworkBehaviour
 
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
-        if (Physics.Raycast(ray, out hit, 5f))
+        if (Physics.Raycast(ray, out hit, 2f))
         {
             LootingSystem lootingSystem = hit.collider.GetComponent<LootingSystem>();
             if (lootingSystem != null)
             {
-                lootingSystem.GetLooted();
+                lootingSystem.GetLooted(NetworkClient.localPlayer.netId);
                 return;
             }
-            else if (hit.collider.GetComponent<Item>() != null)
+            if (hit.collider.GetComponent<Item>() != null)
             {
                 Item Item = hit.collider.GetComponent<Item>();
                 curentInventory.CmdAddItem(Item);
@@ -54,17 +94,13 @@ public class LootingSystem : NetworkBehaviour
         }
     }
 
-    private void Update()
+    public void OnGUI()
     {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Event.current.Equals(Event.KeyboardEvent("E")))
         {
             Debug.Log("E");
             LootTo();
         }
     }
+
 }
