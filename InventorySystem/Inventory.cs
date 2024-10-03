@@ -121,35 +121,7 @@ namespace InventorySystem
 
             UpdateInventoryUI();
         }
-
-        [TargetRpc]
-        public void TargetRpcInventoryItemCountChange(int count, int index)
-        {
-            if (!isLocalPlayer) return;
-            Debug.Log("TargetRpcInventoryItemCountChange");
-            inventory[index].Count = count;
-            UpdateInventoryUI();
-        }
-
-        [ClientRpc]
-        public void RpcInventoryLootUIUpdate()
-        {
-            Debug.Log("RpcInventoryLootUIUpdate");
-            UpdateInventoryLootUI();
-        }
-
-        [TargetRpc]
-        public void RpcUpdateInventoryUI()
-        {
-            Debug.Log("RpcUpdateInventoryUI");
-            UpdateInventoryUI();
-        }
-
-        public void UpdateInventoryLootUI()
-        {
-            LootUI.Instance.ShowLootItems();
-        }
-
+        
         public void UpdateInventoryUI()
         {
             LootUI.Instance.UpdateInventoryItems(GetAllItems());

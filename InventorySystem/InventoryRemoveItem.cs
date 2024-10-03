@@ -24,7 +24,6 @@ public static class InventoryRemoveItem
                 if (_item.Count > remainingCountToRemove)
                 {
                     _item.DecreaseStack(remainingCountToRemove);
-                    inventory.TargetRpcInventoryItemCountChange(inventory.inventory.IndexOf(_item), _item.Count);
                     remainingCountToRemove = 0;
                     break;
                 }
@@ -49,8 +48,9 @@ public static class InventoryRemoveItem
         {
             Debug.Log(inventory);
             ItemSpawner.Instance.ServerSpawnItemByData(inventory.inventory[index].ItemData, count, inventory.gameObject.transform.position + inventory.gameObject.transform.forward * 1.0f);
-            inventory.inventory[index].DecreaseStack(count);
-            inventory.TargetRpcInventoryItemCountChange(inventory.inventory[index].Count, index);
+            var _item = inventory.inventory[index];
+            _item.DecreaseStack(count);
+            inventory.inventory[index] = _item;
             return;
         }
         ItemSpawner.Instance.ServerSpawnItemByData(inventory.inventory[index].ItemData, inventory.inventory[index].Count, inventory.transform.position + inventory.transform.forward * 1.0f);

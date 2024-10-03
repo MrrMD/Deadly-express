@@ -23,7 +23,7 @@ namespace Utils
 
         public static bool HasEnoughItems(Inventory inventory, InventoryItem requiredItem)
         {
-            if (requiredItem == null) return false;
+            if (requiredItem.ItemData == null) return false;
 
             int totalCount = 0;
 
