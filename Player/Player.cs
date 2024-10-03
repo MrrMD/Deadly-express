@@ -1,3 +1,4 @@
+using InventorySystem;
 using Mirror;
 
 using UnityEngine;

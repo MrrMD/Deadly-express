@@ -1,5 +1,6 @@
 using Mirror;
 using System.Security.Principal;
+using InventorySystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

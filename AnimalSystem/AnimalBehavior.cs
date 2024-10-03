@@ -1,3 +1,4 @@
+using AnimalSystem;
 using Mirror;
 using UnityEngine;
 
@@ -64,15 +65,15 @@ public class AnimalBehavior : NetworkBehaviour
         }
         else
         {
-            // Здесь будет логика движения с использованием NavMesh или другого подхода
-            Debug.Log("Преследование игрока!");
+            // Р—РґРµСЃСЊ Р±СѓРґРµС‚ Р»РѕРіРёРєР° РґРІРёР¶РµРЅРёСЏ СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј NavMesh РёР»Рё РґСЂСѓРіРѕРіРѕ РїРѕРґС…РѕРґР°
+            Debug.Log("РџСЂРµСЃР»РµРґРѕРІР°РЅРёРµ РёРіСЂРѕРєР°!");
         }
     }
 
     private void AttackPlayer()
     {
-        // Логика атаки игрока
-        Debug.Log("Атака игрока!");
+        // Р›РѕРіРёРєР° Р°С‚Р°РєРё РёРіСЂРѕРєР°
+        Debug.Log("РђС‚Р°РєР° РёРіСЂРѕРєР°!");
         CmdAttackPlayer(player.GetComponent<Player>());
     }
 

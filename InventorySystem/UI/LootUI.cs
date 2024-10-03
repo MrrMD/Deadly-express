@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using InventorySystem;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
