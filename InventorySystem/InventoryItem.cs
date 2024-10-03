@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 [System.Serializable]
@@ -6,7 +5,7 @@ public class InventoryItem
 {
     [SerializeField] private ItemData itemData = null;
     [SerializeField] private string itemName = "Item";
-    [SerializeField] private int count = 0; // Êîëè÷åñòâî ïðåäìåòîâ
+    [SerializeField] private int count = 0; // ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð²
 
     public ItemData ItemData { get => itemData; set => itemData = value; }
     public string ItemName { get => itemName; set => itemName = value; }
@@ -71,5 +70,4 @@ public class InventoryItem
     {
         return $"Item: {itemName}, Count: {count}, ItemData{itemData}";
     }
-
 }
