@@ -24,7 +24,6 @@ namespace InventorySystem
                     }
                 }
             }
-
             foreach (var i in inventory.inventory)
             {
                 if (i.ItemName == "Item" && addedItem.Count != 0)
@@ -39,13 +38,12 @@ namespace InventorySystem
         public static void AddItemFromChest(Inventory inventory, int itemIndex, int count)
         {
             Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
             if (chest == null) return;
 
             var chestInventory = chest.Inventory;
             InventoryItem chestItem = chestInventory.inventory[itemIndex];
             if (chestItem.ItemData == null) return;
-            int remainingCount = chestItem.Count;
+            var remainingCount = chestItem.Count;
             if (count != 0)
             {
                 remainingCount = 1;
@@ -80,19 +78,14 @@ namespace InventorySystem
 
         public static void AddItemFromChestForIndex(Inventory inventory, int itemIndex, int slotIndex, int count)
         {
-            int remainingCount = 0;
-
             Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
             if (chest == null) return;
-
             var chestInventory = chest.Inventory;
             InventoryItem chestItem = chestInventory.inventory[itemIndex];
             
             if (chestItem.ItemData == null) return;
 
-            remainingCount = chestItem.Count;
-
+            var remainingCount = chestItem.Count;
             InventoryItem inventoryitem = inventory.inventory[slotIndex];
 
             if (inventoryitem.ItemName == "Item")
@@ -136,20 +129,15 @@ namespace InventorySystem
 
         public static void AddItemToChestByIndex(Inventory inventory, int itemIndex, int slotIndex, int count)
         {
-            int remainingCount = 0;
-
             Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
             if (chest == null) return;
-
+            
             var chestInventory = chest.Inventory;
             if (chestInventory == null) return;
 
             InventoryItem chestItem = chestInventory.inventory[slotIndex];
-
-
             InventoryItem inventoryitem = inventory.inventory[itemIndex];
-            remainingCount = inventoryitem.Count;
+            var remainingCount = inventoryitem.Count;
             if (chestItem.ItemName == "Item")
             {
                 chestItem = new InventoryItem(inventoryitem);
@@ -189,20 +177,13 @@ namespace InventorySystem
 
         public static void AddItemToChest(Inventory inventory, int itemIndex, int count)
         {
-            int remainingCount = 0;
-
             Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
             if (chest == null) return;
-
             Inventory chestInventory = chest.Inventory;
-
             if (chestInventory == null) return;
 
             InventoryItem inventoryitem = inventory.inventory[itemIndex];    
-
-            remainingCount = inventoryitem.Count;
-
+            var remainingCount = inventoryitem.Count;
             if (count != 0) remainingCount = 1; ;   
         
             for (int i = 0; i < chestInventory.inventory.Count; i++)
