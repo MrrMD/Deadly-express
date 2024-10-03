@@ -1,3 +1,4 @@
+using InventorySystem;
 using Mirror;
 
 using UnityEngine;
@@ -15,6 +16,8 @@ public class Player : NetworkBehaviour, IEntity
 
     [SerializeField] private Inventory inventory;
     [SerializeField] private PlayerItemSystem playerItemSystem;
+
+    [SerializeField] private PlayerCameraController playerCameraController;
 
     [SerializeField] private HealthSystem healthSystem;
     [SerializeField] private StaminaSystem staminaSystem;
@@ -41,10 +44,13 @@ public class Player : NetworkBehaviour, IEntity
     public HealthSystem HealthSystem { get => healthSystem;}
     public StaminaSystem StaminaSystem { get => staminaSystem; }
     public FoodSystem FoodSystem { get => foodSystem; }
+    public PlayerCameraController PlayerCameraController { get => playerCameraController; set => playerCameraController = value; }
+
 
     public Role Role
     {
         set { role = value; }
         get { return role; }
     }
+
 }

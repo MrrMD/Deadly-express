@@ -1,11 +1,12 @@
+using InventorySystem;
 using Mirror;
 using UnityEngine;
 
 [System.Serializable]
 public class Item : NetworkBehaviour
 {
-    [SerializeField] private ItemData itemData; // Ссылка на ScriptableObject
-    [SerializeField] private int count = 1; // Количество предметов
+    [SerializeField] private ItemData itemData; // РЎСЃС‹Р»РєР° РЅР° ScriptableObject
+    [SerializeField] private int count = 1; // РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРµРґРјРµС‚РѕРІ
 
     public Item()
     {

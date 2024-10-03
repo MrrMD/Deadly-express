@@ -1,3 +1,4 @@
+using InventorySystem;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -63,7 +64,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             else
             {
-                Debug.LogWarning("Попытка вызова команды без авторизации.");
+                Debug.LogWarning("РџРѕРїС‹С‚РєР° РІС‹Р·РѕРІР° РєРѕРјР°РЅРґС‹ Р±РµР· Р°РІС‚РѕСЂРёР·Р°С†РёРё.");
             }
         }
     }
@@ -98,17 +99,16 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             else
             {
-                Debug.LogWarning("Попытка вызова команды без авторизации.");
+                Debug.LogWarning("РџРѕРїС‹С‚РєР° РІС‹Р·РѕРІР° РєРѕРјР°РЅРґС‹ Р±РµР· Р°РІС‚РѕСЂРёР·Р°С†РёРё.");
             }
         }
     }
 
-    //что бы убрать лаг при перемещении
+    //С‡С‚Рѕ Р±С‹ СѓР±СЂР°С‚СЊ Р»Р°Рі РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё
     private void MakeItemNotVisible()
     {
         Color color = dragItem.GetComponent<Image>().color;
         color.a = 0;
         dragItem.GetComponent<Image>().color = color;
-        dragItem.GetComponentInChildren<TextMeshProUGUI>().color = color;
     }
 }

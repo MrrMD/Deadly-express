@@ -1,3 +1,4 @@
+using InventorySystem;
 using Mirror;
 using UnityEngine;
 
@@ -36,7 +37,7 @@ public class PlayerItemSystem : NetworkBehaviour
 
     public void PutItemToChest(int itemIndex, int slotIndex, int count)
     {
-        inventory.CmdPutItemToChest(itemIndex, slotIndex, count); 
+        inventory.CmdPutItemToChestByIndex(itemIndex, slotIndex, count); 
     }
 
 }

@@ -1,3 +1,4 @@
+using InventorySystem;
 using Mirror;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -50,7 +51,5 @@ public class UIInventoryLootSlot : MonoBehaviour, IDropHandler
         {
             identity.GetComponent<PlayerItemSystem>().PutItemToChest(inventoryItemIndex, int.Parse(gameObject.name), 1);
         }
-
     }
-
 }

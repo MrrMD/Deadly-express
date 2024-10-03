@@ -16,8 +16,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         moveSpeed = 5f;
         controller = GetComponent<CharacterController>();
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
+        
     }
 
     private void Update()

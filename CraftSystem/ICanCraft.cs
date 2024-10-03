@@ -1,6 +1,7 @@
 using Mirror;
 using NUnit.Framework;
 using System.Collections.Generic;
+using InventorySystem;
 using UnityEngine;
 
 [RequireComponent(typeof(Inventory))]
@@ -13,7 +14,7 @@ public class ICanCraft : NetworkBehaviour, IUsable
     public void Use()
     {
         Debug.Log("Crafter is open");
-        //Открыть UI и поднянуть айтемы
+        //РћС‚РєСЂС‹С‚СЊ UI Рё РїРѕРґРЅСЏРЅСѓС‚СЊ Р°Р№С‚РµРјС‹
     }
 
     //public Item CraftItem(Item item)

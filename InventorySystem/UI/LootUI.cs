@@ -1,7 +1,11 @@
+using Mirror;
 using System.Collections.Generic;
+using InventorySystem;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
-
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class LootUI : MonoBehaviour
 {
@@ -14,6 +18,7 @@ public class LootUI : MonoBehaviour
     [SerializeField] private GameObject inventoryLootSlotPrefab;
     [SerializeField] private GameObject inventoryLootItemPrefab;
     [SerializeField] private bool lootUiIsOpen = false;
+    [SerializeField] private bool isInventoryOpen = false;
 
     private Inventory lootingInventory;
     public Inventory LootingInventory { get => lootingInventory; }
@@ -39,22 +44,23 @@ public class LootUI : MonoBehaviour
     {
         Debug.Log("Loot UI open");
         lootUiIsOpen = true;
-
+        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.LockCamera();
         lootingInventory = inventory;
         lootPanel.SetActive(true);
-        UpdateLootItems();
-        inventory.OnInventoryChangedEvent += UpdateLootItems;
+        ShowLootItems();
+        inventory.OnInventoryChangedEvent += ShowLootItems;
     }
 
     public void Close()
     {
-        lootingInventory.OnInventoryChangedEvent -= UpdateLootItems;
+        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.UnlockCamera();
+        lootingInventory.OnInventoryChangedEvent -= ShowLootItems;
         lootUiIsOpen = false;
         lootPanel.SetActive(false);
         lootingInventory = null;
     }
 
-    public void UpdateLootItems()
+    public void ShowLootItems()
     {
         if (!lootUiIsOpen) return;
         Debug.Log("Update loot items");
@@ -68,7 +74,7 @@ public class LootUI : MonoBehaviour
         for (int i = 0; i < lootItems.Count; i++)
         {
             GameObject lootItemSlot = Instantiate(inventoryLootSlotPrefab, lootPanel.transform);
-            lootItemSlot.name = i.ToString();   
+            lootItemSlot.name = i.ToString();
             GameObject lootItem = Instantiate(inventoryLootItemPrefab, lootItemSlot.transform);
             lootItem.name = i.ToString();
             lootItem.GetComponentInChildren<TextMeshProUGUI>().text = lootItems[i].Count.ToString();
@@ -87,7 +93,7 @@ public class LootUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        for(int i = 0; i < inventory.Count; i++)
+        for (int i = 0; i < inventory.Count; i++)
         {
             GameObject inventorySlot = Instantiate(InventorySlotPrefab, inventoryPanel.transform);
             inventorySlot.name = i.ToString();
@@ -96,10 +102,39 @@ public class LootUI : MonoBehaviour
             //inventoryItem.GetComponent<Image>().sprite = item.ItemIcon;
             if (inventory[i].ItemName == "Item")
             {
-                inventoryItem.GetComponent<CanvasGroup>().blocksRaycasts = false;   
+                inventoryItem.GetComponent<CanvasGroup>().blocksRaycasts = false;
                 inventoryItem.SetActive(false);
             }
             inventoryItem.GetComponentInChildren<TextMeshProUGUI>().text = inventory[i].Count.ToString();
+        }
+    }
+
+    private void OpenInventory()
+    {
+        isInventoryOpen = true;
+        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.LockCamera();
+    }
+
+    private void CloseInventory()
+    {
+        isInventoryOpen = false;
+        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.UnlockCamera();
+    }
+
+    public void OnGUI()
+    {
+        if ((Event.current.Equals(Event.KeyboardEvent("Tab")) && !isInventoryOpen) && !lootUiIsOpen)
+        {
+            OpenInventory();
+            return;
+        }
+        if (Event.current.Equals(Event.KeyboardEvent("Tab")) && lootUiIsOpen)
+        {
+            lootingInventory.GetComponent<LootingSystem>().CmdSetLootingInactive();
+        }
+        if (Event.current.Equals(Event.KeyboardEvent("Tab")) && isInventoryOpen)
+        {
+            CloseInventory();
         }
     }
 }
