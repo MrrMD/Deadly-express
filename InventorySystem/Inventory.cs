@@ -21,11 +21,8 @@ namespace InventorySystem
             {
                 return;
             }
-
             if (inventorySize == 0) inventorySize = 6;
-
             base.OnStartClient();
-
             InitializeEmptyInventory();
         }
     
