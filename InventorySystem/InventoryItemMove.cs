@@ -18,16 +18,15 @@ public static class InventoryItemMove
             itemTo = new InventoryItem(inventory.inventory[from]);
             itemFrom.DecreaseStack(1);
             itemTo.Count = 1;
-            inventory.inventory[to] = itemTo;
-            inventory.inventory[from] = itemFrom;
         }
         else if (itemFrom.ItemName == itemTo.ItemName && itemTo.CanStack(1))
         {
             itemTo.IncreaseStack(1);
             itemFrom.DecreaseStack(1);
-            inventory.inventory[to] = itemTo;
-            inventory.inventory[from] = itemFrom;
         }
+        inventory.inventory[to] = itemTo;
+        inventory.inventory[from] = itemFrom;
+        inventory.UpdateInventoryUI();
     }
     public static void MoveItemStack(Inventory inventory, int from, int to)
     {

@@ -120,7 +120,7 @@ namespace InventorySystem
             UpdateInventoryUI();
         }
 
-        private void UpdateInventoryUI()
+        public void UpdateInventoryUI()
         {
             if(!isLocalPlayer) return;
             LootUI.Instance.UpdateInventoryItems(GetAllItems());

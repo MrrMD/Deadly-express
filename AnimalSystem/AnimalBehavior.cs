@@ -1,36 +1,33 @@
 using AnimalSystem;
 using Mirror;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(Animal))]
 public class AnimalBehavior : NetworkBehaviour
 {
     [Header("Behavior Settings")]
-    [SerializeField] private float detectionRadius = 10f; 
+    [SerializeField] private float detectionRadius = 10f;
+
     [SerializeField] private float attackDistance = 2f; 
     //[SerializeField] private float movementSpeed = 2f;
-
-    private Transform player; 
-    private Animal animal;
+    [SerializeField] private NavMeshAgent agent;  // NavMeshAgent для перемещения волка
+    [SerializeField] private Transform player; 
+    [SerializeField] private Animal animal;
     private bool isAggroed = false; 
 
-    private void Awake()
+    public void Start()
     {
         animal = GetComponent<Animal>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
     {
         if (!animal.HealthSystem.IsAlive) return;
 
-        if (isAggroed)
-        {
-            ChasePlayer();
-        }
-        else
-        {
-            DetectPlayer();
-        }
+        agent.SetDestination(NetworkClient.localPlayer.transform.position);
+
     }
 
     private void DetectPlayer()
@@ -66,7 +63,7 @@ public class AnimalBehavior : NetworkBehaviour
         else
         {
             // Здесь будет логика движения с использованием NavMesh или другого подхода
-            Debug.Log("Преследование игрока!");
+            agent.SetDestination(player.position);
         }
     }
 

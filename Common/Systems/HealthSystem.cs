@@ -10,16 +10,12 @@ public class HealthSystem : NetworkBehaviour
     [SerializeField] private float health;
     [SerializeField] private const float maxHealth = 100;
 
-    [SerializeField] private IEntity entity;
 
     [SerializeField] private PlayerAnimator playerAnimator;
     public bool IsAlive { get => isAlive; }
 
     private void Start()
     {
-        entity = GetComponent<IEntity>();
-       
-
         health = maxHealth;
         isAlive = true;
     }

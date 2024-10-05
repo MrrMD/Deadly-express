@@ -8,7 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(HealthSystem))]
 [RequireComponent(typeof(StaminaSystem))]
 [RequireComponent(typeof(FoodSystem))]
-public class Player : NetworkBehaviour, IEntity
+public class Player : NetworkBehaviour
 {
     [SerializeField] private string player_name;
     [SerializeField] private Role role;
@@ -45,8 +45,7 @@ public class Player : NetworkBehaviour, IEntity
     public StaminaSystem StaminaSystem { get => staminaSystem; }
     public FoodSystem FoodSystem { get => foodSystem; }
     public PlayerCameraController PlayerCameraController { get => playerCameraController; set => playerCameraController = value; }
-
-
+    
     public Role Role
     {
         set { role = value; }
