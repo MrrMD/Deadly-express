@@ -2,10 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using InventorySystem;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
 
 public class LootUI : MonoBehaviour
 {

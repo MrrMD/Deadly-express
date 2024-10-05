@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
-using Quaternion = System.Numerics.Quaternion;
+using Utils;
 
 namespace AnimalSystem.AnimalSpawnSystem
 {
@@ -38,7 +37,7 @@ namespace AnimalSystem.AnimalSpawnSystem
             var animalsForSpawn = new List<GameObject>();
             if (point.isWolfSpawnPoint)
             {
-                animalsForSpawn.Add(Resources.Load<GameObject>(Utils.AnimalSystemConstants.WOLF_PREFAB_PATH));
+                animalsForSpawn.Add(Resources.Load<GameObject>(AnimalSystemConstants.WOLF_PREFAB_PATH));
             }
             
             var animalCount = Random.Range(point.minAnimalCount, point.maxAnimalCount);

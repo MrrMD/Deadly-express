@@ -1,5 +1,6 @@
 using InventorySystem;
 using Unity.Mathematics;
+using UnityEngine;
 
 public static class InventoryItemMove 
 {
@@ -31,18 +32,16 @@ public static class InventoryItemMove
     {
         var itemFrom = inventory.inventory[from];
         var itemTo = inventory.inventory[to];
-        
-        if (inventory.inventory[to].ItemName == "Item" || inventory.inventory[to].ItemName != inventory.inventory[from].ItemName
-            || (inventory.inventory[from].ItemName == inventory.inventory[to].ItemName && !inventory.inventory[to].CanStack(1)))
+
+        if (itemTo.ItemName == "Item" || itemTo.ItemName != itemFrom.ItemName
+                                      || (itemFrom.ItemName == itemTo.ItemName && !itemTo.CanStack(1)))
         {
-            itemTo = inventory.inventory[from];
-            itemFrom.Count = 0;
             inventory.inventory[from] = itemFrom;
             inventory.inventory[to] = itemTo;
             return;
         }
         
-        if (inventory.inventory[from].ItemName == inventory.inventory[to].ItemName && inventory.inventory[to].HowMuchCanStack() > 0)
+        if (itemFrom.ItemName == itemTo.ItemName && inventory.inventory[to].HowMuchCanStack() > 0)
         {
             var canStackCount = math.min(inventory.inventory[to].HowMuchCanStack(), itemFrom.Count);
             itemTo.IncreaseStack(canStackCount);

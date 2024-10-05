@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using Utils;
 
 namespace InventorySystem
 {
@@ -11,16 +12,16 @@ namespace InventorySystem
         public event Action OnInventoryChangedEvent;
 
         [SerializeField] public readonly SyncList<InventoryItem> inventory = new SyncList<InventoryItem>();
-        [SerializeField] private int inventorySize = 6;
+        private int inventorySize = InventoryConstants.INVENTORY_SIZE;
 
         public override void OnStartClient()
         {
-            inventory.OnChange += OnInventoryChanged;
-
-            if (!isLocalPlayer)
+            if (!isLocalPlayer && !GetComponent<Chest>())
             {
                 return;
             }
+            inventory.OnChange += OnInventoryChanged;
+
             if (inventorySize == 0) inventorySize = 6;
             base.OnStartClient();
             InitializeEmptyInventory();
@@ -35,7 +36,7 @@ namespace InventorySystem
                 item.Count = 0;
                 inventory.Add(item);
             }
-            LootUI.Instance.UpdateInventoryItems(GetAllItems());
+            UpdateInventoryUI();
         }
 
         [Command]
@@ -118,9 +119,10 @@ namespace InventorySystem
 
             UpdateInventoryUI();
         }
-        
-        public void UpdateInventoryUI()
+
+        private void UpdateInventoryUI()
         {
+            if(!isLocalPlayer) return;
             LootUI.Instance.UpdateInventoryItems(GetAllItems());
         }
 
