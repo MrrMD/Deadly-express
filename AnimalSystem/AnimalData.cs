@@ -9,19 +9,33 @@ namespace AnimalSystem
     [CreateAssetMenu(fileName = "AnimalData", menuName = "AnimalSystem/AnimalData", order = 1)]
     public class AnimalData : ScriptableObject
     {
-        [FormerlySerializedAs("animalName")]
-        [Header("Animal Settings")]
+        [Header("Animal base settings")]
         [SerializeField] private AnimalType animalType; 
         [SerializeField] private bool isEnemy;
         [SerializeField] private int meatCount;
-        [SerializeField] private float atackValue;
-        [SerializeField] private float atackRange;
+        
+        [Header("Animal atack settings")]
+        [SerializeField] private float attackDamage;
+
+        [SerializeField] private float attackRadius;
+        [SerializeField] private float detectionRadius;
+        [SerializeField] private float attackDistance; 
+        [SerializeField] private float attackCooldown;
+        
+        [Header("Animal navmesh settings")]
+        [SerializeField] private float wanderRadius = 10f;  
+        [SerializeField] private float wanderTimer = 5f;   
         
         public AnimalType AnimalType { get => animalType;}
         public bool IsEnemy { get => isEnemy;}
         public int MeatCount { get => meatCount;}
-        public float AtackValue { get => atackValue;}
-        public float AtackRange { get => atackRange;}
-
+        public float AttackDamage { get => attackDamage;}
+        public float AttackRadius { get => attackRadius;}
+        public float DetectionRadius { get => detectionRadius; }
+        public float AttackDistance { get => attackDistance; }
+        public float AttackCooldown { get => attackCooldown; }
+        
+        public float WanderRadius { get => wanderRadius;}
+        public float WanderTimer { get => wanderTimer;}
     }
 }

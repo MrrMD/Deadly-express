@@ -56,8 +56,8 @@ namespace AnimalSystem.AnimalSpawnSystem
                     Debug.Log("Animal for spawn == null");
                     return;
                 }
-
-                var itemInstance = Instantiate(animalForSpawn.gameObject, point.transform, true);
+                Debug.Log(point.transform.position);
+                var itemInstance = Instantiate(animalForSpawn.gameObject, point.gameObject.transform, false);
 
                 // Спавн на всех клиентах
                 NetworkServer.Spawn(itemInstance);

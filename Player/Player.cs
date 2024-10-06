@@ -22,7 +22,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private HealthSystem healthSystem;
     [SerializeField] private StaminaSystem staminaSystem;
     [SerializeField] private FoodSystem foodSystem;
-
     public Inventory Inventory { get => inventory;}
 
     public override void OnStartClient()
@@ -44,12 +43,19 @@ public class Player : NetworkBehaviour
     public HealthSystem HealthSystem { get => healthSystem;}
     public StaminaSystem StaminaSystem { get => staminaSystem; }
     public FoodSystem FoodSystem { get => foodSystem; }
+
     public PlayerCameraController PlayerCameraController { get => playerCameraController; set => playerCameraController = value; }
     
     public Role Role
     {
         set { role = value; }
         get { return role; }
+    }
+
+    public void TakeDamage(float value)
+    {
+        Debug.Log("Player is taking damage");
+        healthSystem.CmdTakeDamage(value);
     }
 
 }

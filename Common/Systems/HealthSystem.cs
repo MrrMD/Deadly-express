@@ -9,8 +9,6 @@ public class HealthSystem : NetworkBehaviour
     [SyncVar(hook = nameof(OnHealthChanged))]
     [SerializeField] private float health;
     [SerializeField] private const float maxHealth = 100;
-
-
     [SerializeField] private PlayerAnimator playerAnimator;
     public bool IsAlive { get => isAlive; }
 
@@ -50,7 +48,7 @@ public class HealthSystem : NetworkBehaviour
 
     private void OnHealthChanged(float oldValue, float newValue)
     {
-        Debug.Log($"Stamina updated from {oldValue} to {newValue}");
+        Debug.Log($"Health updated from {oldValue} to {newValue}");
         UpdateHealthText();
     }
 
