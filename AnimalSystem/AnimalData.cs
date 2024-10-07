@@ -19,7 +19,6 @@ namespace AnimalSystem
 
         [SerializeField] private float attackRadius;
         [SerializeField] private float detectionRadius;
-        [SerializeField] private float attackDistance; 
         [SerializeField] private float attackCooldown;
         
         [Header("Animal navmesh settings")]
@@ -32,7 +31,6 @@ namespace AnimalSystem
         public float AttackDamage { get => attackDamage;}
         public float AttackRadius { get => attackRadius;}
         public float DetectionRadius { get => detectionRadius; }
-        public float AttackDistance { get => attackDistance; }
         public float AttackCooldown { get => attackCooldown; }
         
         public float WanderRadius { get => wanderRadius;}

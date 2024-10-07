@@ -1,6 +1,8 @@
-﻿namespace AnimalSystem
+﻿using Mirror;
+
+namespace AnimalSystem
 {
-    public abstract class AnimalState
+    public abstract class AnimalState : NetworkBehaviour
     {
         protected Animal animal;
         
@@ -8,7 +10,6 @@
         {
             this.animal = animal;
         }
-
         public abstract void Update();
 
         public abstract void Enter();

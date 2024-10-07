@@ -1,10 +1,12 @@
-﻿using InventorySystem;
+﻿using AnimalSystem.AnimalStates;
+using InventorySystem;
+using Mirror;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace AnimalSystem
 {
-    public class Animal : MonoBehaviour
+    public class Animal : NetworkBehaviour
     {
         [SerializeField] private AnimalData animalData;
         [SerializeField] private HealthSystem healthSystem;
@@ -21,9 +23,9 @@ namespace AnimalSystem
         public Animator Animator { get => animator;}
         public Player Player { get => player;}
 
-
-        private void Start()
+        public override void OnStartServer()
         {
+            base.OnStartServer();
             inventory = GetComponent<Inventory>();
             healthSystem = GetComponent<HealthSystem>();
             agent = GetComponent<NavMeshAgent>();
@@ -34,12 +36,14 @@ namespace AnimalSystem
             
             ChangeState(new PatrolState(this));
         }
-        
+
+        [Server]
         void Update()
         {
             currentState.Update();
         }
         
+        [Server]
         public void ChangeState(AnimalState newState)
         {
             if (currentState != null)
@@ -51,6 +55,7 @@ namespace AnimalSystem
             currentState.Enter();
         }
 
+        [Server]
         private void OnTriggerEnter(Collider other)
         {
             if(currentState.GetType() == typeof(ChaseState)) return;
@@ -63,11 +68,13 @@ namespace AnimalSystem
             }
         }
 
+        [Server]
         public bool IsPlayerInAttackRadius()
         {
             return Vector3.Distance(transform.position, player.transform.position) <= animalData.AttackRadius;
         }
 
+        [Server]
         public void TakeDamage(float value, Player from)
         {
             if (player == null)

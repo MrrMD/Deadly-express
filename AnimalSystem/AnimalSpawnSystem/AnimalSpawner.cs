@@ -14,15 +14,6 @@ namespace AnimalSystem.AnimalSpawnSystem
         [SerializeField] private Animal[] animals;
         [SerializeField] private int totalAnimalCountOnTheMap = 0;
 
-        public override void OnStartClient()
-        {
-            if (!isServer)
-            {
-                Destroy(this);
-            }
-            base.OnStartClient();
-        }
-
         public override void OnStartServer()
         {
             base.OnStartServer();
@@ -57,7 +48,7 @@ namespace AnimalSystem.AnimalSpawnSystem
                     return;
                 }
                 Debug.Log(point.transform.position);
-                var itemInstance = Instantiate(animalForSpawn.gameObject, point.gameObject.transform, false);
+                var itemInstance = Instantiate(animalForSpawn.gameObject, point.gameObject.transform.position,  Quaternion.identity);
 
                 // Спавн на всех клиентах
                 NetworkServer.Spawn(itemInstance);
@@ -65,12 +56,10 @@ namespace AnimalSystem.AnimalSpawnSystem
             }
         }
 
+        [Server]
         private Animal[] SelectAnimalsForSpawn(AnimalSpawnPoint point)
         {
-
             return animals.Where(animal => AnimalSpawnHelper.CanSpawnThisAnimal(point, animal)).ToArray();
-
         }
-        
     }
 }

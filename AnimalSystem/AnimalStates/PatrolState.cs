@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Mirror;
+using UnityEngine;
 
-namespace AnimalSystem
+namespace AnimalSystem.AnimalStates
 {
     public class PatrolState : AnimalState
     {
@@ -9,7 +10,8 @@ namespace AnimalSystem
         public PatrolState(Animal animal) : base(animal)
         {
         }
-
+        
+        [Server]
         public override void Enter()
         {
             animal.Animator.SetBool("isWalking", true);
@@ -17,7 +19,8 @@ namespace AnimalSystem
             timer = animal.AnimalData.WanderTimer;  
             PatrolToRandomPoint();  
         }
-
+        
+        [Server]
         public override void Update()
         {
             timer += Time.deltaTime;
@@ -29,17 +32,20 @@ namespace AnimalSystem
             }
         }
 
+        [Server]
         public override void Exit()
         {
             animal.Animator.SetBool("isWalking", false);
         }
-
+        
+        [Server]
         private void PatrolToRandomPoint()
         {
             Vector3 randomPoint = RandomNavMeshLocation(animal.AnimalData.WanderRadius);
             animal.Agent.SetDestination(randomPoint);  
         }
 
+        [Server]
         private Vector3 RandomNavMeshLocation(float radius)
         {
             Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * radius;  

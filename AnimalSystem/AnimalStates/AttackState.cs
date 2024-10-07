@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using AnimalSystem;
+using AnimalSystem.AnimalStates;
 using UnityEngine;
 
 public class AttackState : AnimalState
