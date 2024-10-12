@@ -64,31 +64,31 @@ namespace InventorySystem
         }
 
         [Command]
-        public void CmdAddItemFromChest(int itemIndex, int count)
+        public void CmdAddItemFromOtherInventory(int itemIndex, int count)
         {
-            InventoryAddItem.AddItemFromChest(this, itemIndex, count);
+            InventoryAddItem.AddItemFromOtherInventory(this, itemIndex, count);
         }
 
         [Command]
-        public void CmdAddItemFromChestForIndex(int itemIndex, int slotIndex, int count)
+        public void CmdAddItemFromOtherInventoryForIndex(int itemIndex, int slotIndex, int count)
         {
-            InventoryAddItem.AddItemFromChestForIndex(this, itemIndex, slotIndex, count); 
+            InventoryAddItem.AddItemFromOtherInventoryForIndex(this, itemIndex, slotIndex, count); 
         }
 
         [Command]
-        public void CmdPutItemToChest(int itemIndex, int count)
+        public void CmdPutItemToOtherInventory(int itemIndex, int count)
         {
-            InventoryAddItem.AddItemToChest(this, itemIndex, count);
+            InventoryAddItem.PutItemToOtherInventory(this, itemIndex, count);
         }
 
         [Command]
-        public void CmdPutItemToChestByIndex(int itemIndex, int slotIndex, int count)
+        public void CmdPutItemToOtherInventoryByIndex(int itemIndex, int slotIndex, int count)
         {
-            InventoryAddItem.AddItemToChestByIndex(this, itemIndex, slotIndex, count);
+            InventoryAddItem.PutItemToOtherInventoryByIndex(this, itemIndex, slotIndex, count);
         }
 
         [Server]
-        public void AddItemToChest(Item addedItem)
+        public void AddItem(Item addedItem)
         {
             inventory.Add(new InventoryItem(addedItem.ItemData, addedItem.ItemData.ItemName, addedItem.Count));
         }

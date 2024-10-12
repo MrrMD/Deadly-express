@@ -6,21 +6,24 @@ using UnityEngine;
 public class LootingSystem : NetworkBehaviour
 {
     [SerializeField] Inventory curentInventory;
+    [SerializeField] private Inventory targetInventory;
     [SyncVar]
     [SerializeField] private bool isLooted = false;
     [SyncVar]
     [SerializeField] private uint isLootedPlayerId;
     [SerializeField] private SphereCollider playerExitTrigerCollider;
 
+    public Inventory TargetInventory { get => targetInventory;}
+    public Inventory CurentInventory { get => curentInventory;}
+
+    
     public override void OnStartClient()
     {
         if (!isLocalPlayer)
         {
             return;
         }
-
         base.OnStartClient();
-
     }
 
     private void Start()
@@ -84,6 +87,7 @@ public class LootingSystem : NetworkBehaviour
             if (lootingSystem != null)
             {
                 lootingSystem.GetLooted(NetworkClient.localPlayer.netId);
+                targetInventory = lootingSystem.CurentInventory;
                 return;
             }
             if (hit.collider.GetComponent<Item>() != null)

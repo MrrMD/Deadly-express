@@ -55,11 +55,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
                 if (eventData.button == PointerEventData.InputButton.Left)
                 {
-                    inventory.CmdAddItemFromChestForIndex(int.Parse(dragItem.name), int.Parse(gameObject.name), 0);
+                    inventory.CmdAddItemFromOtherInventoryForIndex(int.Parse(dragItem.name), int.Parse(gameObject.name), 0);
                 }
                 else if(eventData.button == PointerEventData.InputButton.Right) 
                 {
-                    inventory.CmdAddItemFromChestForIndex(int.Parse(dragItem.name), int.Parse(gameObject.name), 1);
+                    inventory.CmdAddItemFromOtherInventoryForIndex(int.Parse(dragItem.name), int.Parse(gameObject.name), 1);
                 }
             }
             else

@@ -37,7 +37,7 @@ public class PlayerItemSystem : NetworkBehaviour
 
     public void PutItemToChest(int itemIndex, int slotIndex, int count)
     {
-        inventory.CmdPutItemToChestByIndex(itemIndex, slotIndex, count); 
+        inventory.CmdPutItemToOtherInventoryByIndex(itemIndex, slotIndex, count); 
     }
 
 }

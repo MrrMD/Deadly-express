@@ -48,7 +48,7 @@ public class Chest : NetworkBehaviour
                 currentItem.Count = Random.Range(minLootCount, maxLootCount + 1);
                 Debug.Log(currentItem.Count);
 
-                inventory.AddItemToChest(currentItem);
+                inventory.AddItem(currentItem);
                 currentLootCount++;
             }
         }
