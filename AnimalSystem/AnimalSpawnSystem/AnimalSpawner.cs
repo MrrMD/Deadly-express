@@ -40,20 +40,77 @@ namespace AnimalSystem.AnimalSpawnSystem
             var animalCount = Random.Range(point.MinAnimalCount, point.MaxAnimalCount);
             for (var i = 0; i < animalCount; i++)
             {
-                var number = Random.Range(0, animals.Length-1);
+                var number = Random.Range(0, animals.Length - 1);
                 var animalForSpawn = animalsForSpawn[number];
                 if (animalForSpawn == null)
                 {
                     Debug.Log("Animal for spawn == null");
                     return;
                 }
-                Debug.Log(point.transform.position);
-                var itemInstance = Instantiate(animalForSpawn.gameObject, point.gameObject.transform.position,  Quaternion.identity);
+
+                // Попытка найти подходящую позицию для спавна
+                Vector3 spawnPosition = GetValidSpawnPosition(point);
+                
+                if (spawnPosition == Vector3.zero)
+                {
+                    Debug.Log("Failed to find a valid spawn position.");
+                    continue;
+                }
+
+                Debug.Log(spawnPosition);
+
+                var itemInstance = Instantiate(animalForSpawn.gameObject, spawnPosition, Quaternion.identity);
 
                 // Спавн на всех клиентах
                 NetworkServer.Spawn(itemInstance);
                 totalAnimalCountOnTheMap++;
             }
+        }
+
+        // Метод для выбора валидной позиции для спавна
+        private Vector3 GetValidSpawnPosition(AnimalSpawnPoint point)
+        {
+            Vector3 spawnPosition;
+            int attempts = 0;
+            const int maxAttempts = 10; // Количество попыток найти свободную позицию
+
+            do
+            {
+                // Генерация позиции для спавна в зависимости от радиуса
+                if (point.SpawnRadius > 0)
+                {
+                    // Спавним случайным образом в пределах радиуса
+                    Vector3 randomPosition = Random.insideUnitSphere * point.SpawnRadius;
+                    randomPosition.y = 0; // Убираем смещение по высоте, чтобы спавнить на плоскости
+                    spawnPosition = point.transform.position + randomPosition;
+                }
+                else
+                {
+                    // Спавним на самом поинте
+                    spawnPosition = point.transform.position;
+                }
+
+                // Проверяем, свободна ли эта позиция от других объектов
+                if (Physics.CheckSphere(spawnPosition, 0.5f))
+                {
+                    // Если что-то есть на месте спавна, пробуем заново
+                    attempts++;
+                    continue;
+                }
+
+                // Проверка, есть ли земля под спавн-точкой
+                if (Physics.Raycast(spawnPosition + Vector3.up * 10, Vector3.down, out RaycastHit hit, 20f))
+                {
+                    // Корректируем позицию по высоте, чтобы спавнить на поверхности
+                    spawnPosition = hit.point;
+                    return spawnPosition; // Возвращаем валидную позицию
+                }
+
+                attempts++;
+
+            } while (attempts < maxAttempts);
+
+            return Vector3.zero; // Если не удалось найти подходящую позицию
         }
 
         [Server]
