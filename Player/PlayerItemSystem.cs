@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerItemSystem : NetworkBehaviour
 {
-    [SerializeField] private Player player;
+    [SerializeField] private Player.Player player;
     [SerializeField] private ItemData activeItem;
     [SerializeField] private Inventory inventory;   
 
@@ -37,7 +37,7 @@ public class PlayerItemSystem : NetworkBehaviour
 
     public void PutItemToChest(int itemIndex, int slotIndex, int count)
     {
-        inventory.CmdPutItemToChestByIndex(itemIndex, slotIndex, count); 
+        inventory.CmdPutItemToOtherInventoryByIndex(itemIndex, slotIndex, count); 
     }
 
 }

@@ -8,7 +8,6 @@ public class UIInventoryLootSlot : MonoBehaviour, IDropHandler
     NetworkIdentity identity;
     private UIInventoryItem dragItem;
     [SerializeField] private Inventory lootingInventory;
-    [SerializeField] Inventory playerinventory;
 
 
     private void Start()
@@ -25,8 +24,7 @@ public class UIInventoryLootSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-
-        if (eventData.pointerDrag.GetComponent<UIInventoryItem>() != null)
+        if (eventData.pointerDrag.GetComponent<UIInventoryItem>() != null && eventData.pointerDrag.GetComponent<UIInventoryLootItem>() == null)
         {
             lootingInventory = LootUI.Instance.LootingInventory;
             if (lootingInventory == null)
@@ -41,7 +39,6 @@ public class UIInventoryLootSlot : MonoBehaviour, IDropHandler
     private void InventoryToLootIteract(PointerEventData eventData)
     {
         int inventoryItemIndex = int.Parse(eventData.pointerDrag.name);
-        playerinventory = identity.GetComponent<Inventory>();
 
         if (eventData.button == PointerEventData.InputButton.Left)
         {

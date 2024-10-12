@@ -3,7 +3,7 @@ using Mirror;
 using UnityEngine;
 
 [System.Serializable]
-public class Item : NetworkBehaviour
+public class Item : MonoBehaviour
 {
     [SerializeField] private ItemData itemData; // Ссылка на ScriptableObject
     [SerializeField] private int count = 1; // Количество предметов

@@ -48,7 +48,7 @@ public class Chest : NetworkBehaviour
                 currentItem.Count = Random.Range(minLootCount, maxLootCount + 1);
                 Debug.Log(currentItem.Count);
 
-                inventory.AddItemToChest(currentItem);
+                inventory.AddItem(currentItem);
                 currentLootCount++;
             }
         }
@@ -74,16 +74,20 @@ public class Chest : NetworkBehaviour
     [ClientRpc]
     public void RpcChestLootRemove(int index)
     {
-        inventory.inventory[index].ItemName = "item";
-        inventory.inventory[index].Count = 0;
-        inventory.OnInventoryChanged();
+        var _item = inventory.inventory[index];
+        _item.ItemName = "Item";
+        _item.Count = 0;
+        inventory.inventory[index] = _item;
+        // inventory.OnInventoryChanged();
     }
 
     [ClientRpc]
     public void RpcChestLootCountChange(int index, int count)
     {
-        inventory.inventory[index].Count = count;
-        inventory.OnInventoryChanged();
+        var _item = inventory.inventory[index];
+        _item.Count = count;
+        inventory.inventory[index] = _item;
+        // inventory.OnInventoryChanged();
     }
 
 }

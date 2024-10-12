@@ -5,11 +5,20 @@ namespace AnimalSystem.AnimalSpawnSystem
 {
     public class AnimalSpawnPoint : MonoBehaviour
     {
-        [SerializeField] public bool isWolfSpawnPoint = false;
-        [SerializeField] public  bool isChickenSpawnPoint = false;
-        [SerializeField] public  float spawnRadius;
-        [SerializeField] public  int totalAnimalCount;
-        [SerializeField] public  int minAnimalCount;
-        [SerializeField] public  int maxAnimalCount;
+        public AnimalType spawnableAnimals = AnimalType.None;
+        
+        [SerializeField] private int animalCount;
+        [SerializeField] private int minAnimalCount;
+        [SerializeField] private int maxAnimalCount;
+        [SerializeField] private float spawnRadius;
+        
+        public int AnimalCount { get => animalCount;}        
+        public float SpawnRadius { get => spawnRadius;}
+        public int MinAnimalCount { get => minAnimalCount;}
+        public int MaxAnimalCount { get => maxAnimalCount;}
+
+
+
+
     }
 }

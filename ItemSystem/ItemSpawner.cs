@@ -7,7 +7,6 @@ namespace ItemSystem
     {
         public static ItemSpawner Instance { get; private set; }
 
-
         public ItemData itemData;
         public ItemData itemData2;
 
@@ -19,8 +18,7 @@ namespace ItemSystem
                 Instance = this;
             }
         }
-
-        private void Start()
+        public override void OnStartServer()
         {
             itemData = Resources.Load<ItemData>("ScriptableObjects/items/Coal");
             if (itemData == null)
@@ -32,9 +30,7 @@ namespace ItemSystem
             {
                 Debug.LogError("Item not found in Resources folder!");
             }
-        }
-        public override void OnStartClient()
-        {
+            
             ServerSpawnItem(itemData, new Vector3(0, 0.109f, 0));
             ServerSpawnItem(itemData, new Vector3(1, 0.109f, 0));
             ServerSpawnItem(itemData, new Vector3(2, 0.109f, 0));
@@ -53,7 +49,7 @@ namespace ItemSystem
         [Server]
         public void ServerSpawnItem(ItemData data, Vector3 spawnPosition)
         {
-            if (itemData.ItemPrefab != null)
+            if (data.ItemPrefab != null)
             {
                 // Спавн префаба на сервере
                 GameObject itemInstance = Instantiate(data.ItemPrefab, spawnPosition, data.ItemPrefab.transform.rotation);

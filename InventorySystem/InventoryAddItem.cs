@@ -1,4 +1,6 @@
+using System;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace InventorySystem
 {
@@ -6,21 +8,22 @@ namespace InventorySystem
     {
         public static void AddItem(Inventory inventory, Item addedItem)
         {
-            foreach (var i in inventory.inventory)
+            for (int index = 0; index < inventory.inventory.Count; index++)
             {
-                while (addedItem.Count > 0 && i.ItemName == addedItem.ItemData.ItemName && i.CanStack(1))
+                InventoryItem i = inventory.inventory[index];
+                if (addedItem.Count > 0 && i.ItemName == addedItem.ItemData.ItemName && i.CanStack(addedItem.Count))
                 {
-                    i.IncreaseStack(1);
-                    addedItem.DecreaseStack(1);
-                    inventory.TargetRpcInventoryItemCountChange(i.Count, inventory.inventory.IndexOf(i));
-                    break;
-                }
-                if (addedItem.Count == 0)
-                {
-                    break;
+                    int stackAmount = Math.Min(i.HowMuchCanStack(), addedItem.Count);  // Стекуем максимальное возможное количество
+                    i.IncreaseStack(stackAmount);
+                    addedItem.DecreaseStack(stackAmount);
+                    inventory.inventory[index] = i;  // Присваиваем изменённую структуру обратно
+        
+                    if (addedItem.Count == 0)
+                    {
+                        break;
+                    }
                 }
             }
-
             foreach (var i in inventory.inventory)
             {
                 if (i.ItemName == "Item" && addedItem.Count != 0)
@@ -29,112 +32,81 @@ namespace InventorySystem
                     addedItem.DecreaseStack(addedItem.Count);
                     return;
                 }
-                else if (addedItem.Count != 0)
-                {
-                }
             }
         }
 
-        public static void AddItemFromChest(Inventory inventory, int itemIndex, int count)
+        public static void AddItemFromOtherInventory(Inventory inventory, int itemIndex, int count)
         {
-            Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
-            if (chest == null) return;
-
-            InventoryItem item = chest.GetInventoryItemByIndex(itemIndex);
-            if (item == null) return;
-            int remainingCount = item.Count;
+            var targetInventory = inventory.GetComponent<LootingSystem>().TargetInventory;
+            InventoryItem chestItem = targetInventory.inventory[itemIndex];
+            if (chestItem.ItemData == null) return;
+            var remainingCount = chestItem.Count;
             if (count != 0)
             {
                 remainingCount = 1;
             }
 
-
-            foreach (var i in inventory.inventory)
+            for (var index = 0; index < inventory.inventory.Count; index++)
             {
-                while (remainingCount > 0 && i.ItemName == item.ItemName && i.CanStack(1))
+                var _item = inventory.inventory[index];
+                while (remainingCount > 0 && inventory.inventory[index].ItemName == chestItem.ItemName && inventory.inventory[index].CanStack(1))
                 {
-                    i.IncreaseStack(1);
+                    
+                    _item.IncreaseStack(1);
+                    chestItem.DecreaseStack(1);
+                    inventory.inventory[index] = _item;
+                    targetInventory.inventory[itemIndex] = chestItem;
                     remainingCount = remainingCount - 1;
-                    inventory.TargetRpcInventoryItemCountChange(i.Count, inventory.inventory.IndexOf(i));
-                }
-                if (remainingCount == 0)
-                {
-                    if(count != 0)
-                    {
-                        chest.RpcChestLootCountChange(itemIndex, item.Count - 1);
-                        return;
-                    }
-                    else if(count == 0)
-                    {
-                        chest.RpcChestLootRemove(itemIndex);
-                    }
                 }
             }
 
-            foreach (var i in inventory.inventory)
+            for (var index = 0; index < inventory.inventory.Count; index++)
             {
-                if (i.ItemName == "Item" && remainingCount != 0)
+                if (inventory.inventory[index].ItemName == "Item" && remainingCount != 0)
                 {
-                    inventory.inventory[inventory.inventory.IndexOf(i)] = new InventoryItem(item.ItemData, item.ItemData.ItemName, remainingCount);
+                    var _item =  new InventoryItem(chestItem.ItemData, chestItem.ItemData.ItemName, remainingCount);
+                    inventory.inventory[index] = _item;
+                    chestItem.Count -= remainingCount;
+                    targetInventory.inventory[itemIndex] = chestItem;
                     remainingCount = 0;
-                    if(count == 0)
-                    {
-                        chest.RpcChestLootRemove(itemIndex);
-                    }
-                    else if(count == 1)
-                    {
-                        chest.RpcChestLootCountChange(itemIndex, item.Count - 1);
-                    }
-
                 }
             }
         }
 
-        public static void AddItemFromChestForIndex(Inventory inventory, int itemIndex, int slotIndex, int count)
+        public static void AddItemFromOtherInventoryForIndex(Inventory inventory, int itemIndex, int slotIndex, int count)
         {
-            int remainingCount = 0;
+            var targetInventory = inventory.GetComponent<LootingSystem>().TargetInventory;
+            InventoryItem chestItem = targetInventory.inventory[itemIndex];
+            
+            if (chestItem.ItemData == null) return;
 
-            Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
-            if (chest == null) return;
-
-            InventoryItem item = chest.GetInventoryItemByIndex(itemIndex);
-
-            if (item == null) return;
-
-            remainingCount = item.Count;
-
+            var remainingCount = chestItem.Count;
             InventoryItem inventoryitem = inventory.inventory[slotIndex];
 
             if (inventoryitem.ItemName == "Item")
             {
-                inventory.inventory[slotIndex] = new InventoryItem(item);
+                inventory.inventory[slotIndex] = new InventoryItem(chestItem);
                 if (count != 0)
                 {
-                    inventory.inventory[slotIndex].Count = count;
-                    item.DecreaseStack(count);
+                    var _item = inventory.inventory[slotIndex];
+                    _item.Count = count;
+                    inventory.inventory[slotIndex] = _item;
+                    chestItem.DecreaseStack(count);
                 }
                 else if(count == 0) 
                 {
-                    item.DecreaseStack(item.Count);
+                    chestItem.DecreaseStack(chestItem.Count);
                 }
 
-                if(item.Count == 0)
-                {
-                    chest.RpcChestLootRemove(itemIndex);
-                }
-                inventory.RpcUpdateInventoryUI();
-                inventory.RpcInventoryLootUIUpdate();
-                chest.RpcChestLootCountChange(itemIndex, item.Count);
+                targetInventory.inventory[itemIndex] = chestItem;
                 return;
             }
 
-            if (inventoryitem.ItemName == item.ItemName && inventoryitem.HowMuchCanStack() != 0 && remainingCount != 0)
+            if (inventoryitem.ItemName == chestItem.ItemName && inventoryitem.HowMuchCanStack() != 0 && remainingCount != 0)
             {
                 var canStackCount = inventoryitem.HowMuchCanStack();
 
-                var stackCount = math.min(canStackCount, item.Count);
+                var stackCount = math.min(canStackCount, chestItem.Count);
 
                 if (count != 0 && stackCount != 0)
                 {
@@ -142,50 +114,43 @@ namespace InventorySystem
                 }
 
                 inventoryitem.IncreaseStack(stackCount);
-                item.DecreaseStack(stackCount);
-                chest.RpcChestLootCountChange(itemIndex, item.Count);
-                inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, slotIndex);
+                inventory.inventory[slotIndex] = inventoryitem;
+                chestItem.DecreaseStack(stackCount);
+                targetInventory.inventory[itemIndex] = chestItem;
                 remainingCount = remainingCount - stackCount;
             }
-            chest = null;
         }
 
-        public static void AddItemToChestByIndex(Inventory inventory, int itemIndex, int slotIndex, int count)
+        public static void PutItemToOtherInventoryByIndex(Inventory inventory, int itemIndex, int slotIndex, int count)
         {
-            int remainingCount = 0;
+            var targetInventory = inventory.GetComponent<LootingSystem>().TargetInventory;
+            
+            if (targetInventory == null) return;
 
-            Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
-            if (chest == null) return;
-
-            InventoryItem chestItem = chest.Inventory.inventory[slotIndex];
-
-            if (chestItem == null) return;
-
+            InventoryItem chestItem = targetInventory.inventory[slotIndex];
             InventoryItem inventoryitem = inventory.inventory[itemIndex];
-            remainingCount = inventoryitem.Count;
-
+            var remainingCount = inventoryitem.Count;
             if (chestItem.ItemName == "Item")
             {
-                chest.Inventory.inventory[slotIndex] = new InventoryItem(inventoryitem);
+                chestItem = new InventoryItem(inventoryitem);
                 if (count != 0)
                 {
-                    chest.Inventory.inventory[slotIndex].Count = count;
+                    chestItem.Count = count;
                     inventoryitem.DecreaseStack(count);
                 }
                 else if (count == 0)
                 {
                     inventoryitem.DecreaseStack(inventoryitem.Count);
                 }
-
-                chest.RpcChestLootCountChange(slotIndex, chest.Inventory.inventory[slotIndex].Count);
-                inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
+                
+                targetInventory.inventory[slotIndex] = chestItem;
+                inventory.inventory[itemIndex] = inventoryitem;
                 return;
             }
 
-            if (inventoryitem.ItemName == chest.Inventory.inventory[slotIndex].ItemName && chest.Inventory.inventory[slotIndex].HowMuchCanStack() != 0 && remainingCount != 0)
+            if (inventoryitem.ItemName == targetInventory.inventory[slotIndex].ItemName && targetInventory.inventory[slotIndex].HowMuchCanStack() != 0 && remainingCount != 0)
             {
-                var canStackCount = chest.Inventory.inventory[slotIndex].HowMuchCanStack();
+                var canStackCount = targetInventory.inventory[slotIndex].HowMuchCanStack();
                 var stackCount = math.min(canStackCount, inventoryitem.Count);
 
                 if (count != 0 && stackCount != 0)
@@ -193,37 +158,29 @@ namespace InventorySystem
                     stackCount = 1;
                 }
 
-                chest.Inventory.inventory[slotIndex].IncreaseStack(stackCount);
+                chestItem = targetInventory.inventory[slotIndex];
+                chestItem.IncreaseStack(stackCount);
+                targetInventory.inventory[slotIndex] = chestItem;
                 inventoryitem.DecreaseStack(stackCount);
-                chest.RpcChestLootCountChange(slotIndex, chest.Inventory.inventory[slotIndex].Count);
-                inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
+                inventory.inventory[itemIndex] = inventoryitem;
                 remainingCount = remainingCount - stackCount;
             }
         }
 
-        public static void AddItemToChest(Inventory inventory, int itemIndex, int count)
+        public static void PutItemToOtherInventory(Inventory inventory, int itemIndex, int count)
         {
-            int remainingCount = 0;
-
-            Chest chest = Utils.InventoryUtils.FindNearbyChest(inventory.transform);
-
-            if (chest == null) return;
-
-            Inventory chestInventory = chest.Inventory;
-
-            if (chestInventory == null) return;
+            Inventory targetInventory = inventory.GetComponent<LootingSystem>().TargetInventory;
+            if (targetInventory == null) return;
 
             InventoryItem inventoryitem = inventory.inventory[itemIndex];    
-
-            remainingCount = inventoryitem.Count;
-
+            var remainingCount = inventoryitem.Count;
             if (count != 0) remainingCount = 1; ;   
         
-            for (int i = 0; i < chestInventory.inventory.Count; i++)
+            for (int i = 0; i < targetInventory.inventory.Count; i++)
             {
-                if (inventoryitem.ItemName == chestInventory.inventory[i].ItemName && chestInventory.inventory[i].HowMuchCanStack() != 0 && remainingCount != 0)
+                if (inventoryitem.ItemName == targetInventory.inventory[i].ItemName && targetInventory.inventory[i].HowMuchCanStack() != 0 && remainingCount != 0)
                 {
-                    var canStackCount = chest.Inventory.inventory[i].HowMuchCanStack();
+                    var canStackCount = targetInventory.inventory[i].HowMuchCanStack();
                     var stackCount = math.min(canStackCount, inventoryitem.Count);
 
                     if (count != 0 && stackCount != 0)
@@ -231,37 +188,37 @@ namespace InventorySystem
                         stackCount = 1;
                     }
 
-                    chestInventory.inventory[i].IncreaseStack(stackCount);
+                    var _item = targetInventory.inventory[i];
+                    _item.IncreaseStack(stackCount);
+                    targetInventory.inventory[i] = _item;
                     inventoryitem.DecreaseStack(stackCount);
-                    chest.RpcChestLootCountChange(i, chestInventory.inventory[i].Count);
-                    inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
+                    inventory.inventory[itemIndex] = inventoryitem;                    
                     remainingCount = remainingCount - stackCount;
-
                     if (remainingCount == 0) return;
                 }
             }
 
             if(remainingCount == 0) return;
 
-            for (int i = 0; i < chestInventory.inventory.Count; i++)
+            for (int i = 0; i < targetInventory.inventory.Count; i++)
             {
-                if (chestInventory.inventory[i].ItemName == "Item" )
+                if (targetInventory.inventory[i].ItemName == "Item" )
                 {
-                    chestInventory.inventory[i] = new InventoryItem(inventoryitem);
+                    targetInventory.inventory[i] = new InventoryItem(inventoryitem);
 
                     if (count != 0)
                     {
-                        chestInventory.inventory[i].Count = count;
+                        var _item = targetInventory.inventory[i];
+                        _item.Count = count;
+                        targetInventory.inventory[i] = _item;
                         inventoryitem.DecreaseStack(count);
-                        chestInventory.OnInventoryChanged();
-                        inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
+                        inventory.inventory[itemIndex] = inventoryitem;       
                         return;
                     }
                     else if (count == 0)
                     {
                         inventoryitem.DecreaseStack(inventoryitem.Count);
-                        inventory.TargetRpcInventoryItemCountChange(inventoryitem.Count, itemIndex);
-                        chestInventory.OnInventoryChanged();
+                        inventory.inventory[itemIndex] = inventoryitem;    
                         return;
                     }
                 }

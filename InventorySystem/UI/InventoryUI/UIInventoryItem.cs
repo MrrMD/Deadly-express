@@ -67,11 +67,11 @@ public class UIInventoryItem : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 
         if (!isDragging && GetComponent<UIInventoryLootItem>() != null)
         {
-            NetworkClient.localPlayer.GetComponent<Inventory>().CmdAddItemFromChest(int.Parse(eventData.pointerDrag.name), count);
+            NetworkClient.localPlayer.GetComponent<Inventory>().CmdAddItemFromOtherInventory(int.Parse(eventData.pointerDrag.name), count);
         }
         if (!isDragging && GetComponent<UIInventoryLootItem>() == null)
         {
-            NetworkClient.localPlayer.GetComponent<Inventory>().CmdPutItemToChest(int.Parse(eventData.pointerDrag.name), count);
+            NetworkClient.localPlayer.GetComponent<Inventory>().CmdPutItemToOtherInventory(int.Parse(eventData.pointerDrag.name), count);
         }
 
     }

@@ -8,27 +8,20 @@ public class HealthSystem : NetworkBehaviour
 
     [SyncVar(hook = nameof(OnHealthChanged))]
     [SerializeField] private float health;
-    [SerializeField] private const float maxHealth = 100;
-
-    [SerializeField] private IEntity entity;
-
+    [SerializeField] private float maxHealth = 100;
     [SerializeField] private PlayerAnimator playerAnimator;
     public bool IsAlive { get => isAlive; }
 
     private void Start()
     {
-        entity = GetComponent<IEntity>();
-       
-
         health = maxHealth;
         isAlive = true;
     }
 
-    public float GetHealth()
-    {
-        return health;
-    }
+    public float Health { get; }
+    public float MaxHealth { get; }
 
+    
     [Command]
     public void CmdTakeDamage(float value)
     {
@@ -54,7 +47,7 @@ public class HealthSystem : NetworkBehaviour
 
     private void OnHealthChanged(float oldValue, float newValue)
     {
-        Debug.Log($"Stamina updated from {oldValue} to {newValue}");
+        Debug.Log($"Health updated from {oldValue} to {newValue}");
         UpdateHealthText();
     }
 

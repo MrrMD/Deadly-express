@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using Utils;
 
 namespace InventorySystem
 {
@@ -11,21 +12,18 @@ namespace InventorySystem
         public event Action OnInventoryChangedEvent;
 
         [SerializeField] public readonly SyncList<InventoryItem> inventory = new SyncList<InventoryItem>();
-        [SerializeField] private int inventorySize = 6;
+        private int inventorySize = InventoryConstants.INVENTORY_SIZE;
 
         public override void OnStartClient()
         {
-            inventory.OnChange += OnInventoryChanged;
-
-            if (!isLocalPlayer)
+            if (!isLocalPlayer && !GetComponent<Chest>())
             {
                 return;
             }
+            inventory.OnChange += OnInventoryChanged;
 
             if (inventorySize == 0) inventorySize = 6;
-
             base.OnStartClient();
-
             InitializeEmptyInventory();
         }
     
@@ -38,7 +36,7 @@ namespace InventorySystem
                 item.Count = 0;
                 inventory.Add(item);
             }
-            LootUI.Instance.UpdateInventoryItems(GetAllItems());
+            UpdateInventoryUI();
         }
 
         [Command]
@@ -66,31 +64,31 @@ namespace InventorySystem
         }
 
         [Command]
-        public void CmdAddItemFromChest(int itemIndex, int count)
+        public void CmdAddItemFromOtherInventory(int itemIndex, int count)
         {
-            InventoryAddItem.AddItemFromChest(this, itemIndex, count);
+            InventoryAddItem.AddItemFromOtherInventory(this, itemIndex, count);
         }
 
         [Command]
-        public void CmdAddItemFromChestForIndex(int itemIndex, int slotIndex, int count)
+        public void CmdAddItemFromOtherInventoryForIndex(int itemIndex, int slotIndex, int count)
         {
-            InventoryAddItem.AddItemFromChestForIndex(this, itemIndex, slotIndex, count); 
+            InventoryAddItem.AddItemFromOtherInventoryForIndex(this, itemIndex, slotIndex, count); 
         }
 
         [Command]
-        public void CmdPutItemToChest(int itemIndex, int count)
+        public void CmdPutItemToOtherInventory(int itemIndex, int count)
         {
-            InventoryAddItem.AddItemToChest(this, itemIndex, count);
+            InventoryAddItem.PutItemToOtherInventory(this, itemIndex, count);
         }
 
         [Command]
-        public void CmdPutItemToChestByIndex(int itemIndex, int slotIndex, int count)
+        public void CmdPutItemToOtherInventoryByIndex(int itemIndex, int slotIndex, int count)
         {
-            InventoryAddItem.AddItemToChestByIndex(this, itemIndex, slotIndex, count);
+            InventoryAddItem.PutItemToOtherInventoryByIndex(this, itemIndex, slotIndex, count);
         }
 
         [Server]
-        public void AddItemToChest(Item addedItem)
+        public void AddItem(Item addedItem)
         {
             inventory.Add(new InventoryItem(addedItem.ItemData, addedItem.ItemData.ItemName, addedItem.Count));
         }
@@ -122,36 +120,9 @@ namespace InventorySystem
             UpdateInventoryUI();
         }
 
-        [TargetRpc]
-        public void TargetRpcInventoryItemCountChange(int count, int index)
-        {
-            if (!isLocalPlayer) return;
-            Debug.Log("TargetRpcInventoryItemCountChange");
-            inventory[index].Count = count;
-            UpdateInventoryUI();
-        }
-
-        [ClientRpc]
-        public void RpcInventoryLootUIUpdate()
-        {
-            Debug.Log("RpcInventoryLootUIUpdate");
-            UpdateInventoryLootUI();
-        }
-
-        [TargetRpc]
-        public void RpcUpdateInventoryUI()
-        {
-            Debug.Log("RpcUpdateInventoryUI");
-            UpdateInventoryUI();
-        }
-
-        public void UpdateInventoryLootUI()
-        {
-            LootUI.Instance.ShowLootItems();
-        }
-
         public void UpdateInventoryUI()
         {
+            if(!isLocalPlayer) return;
             LootUI.Instance.UpdateInventoryItems(GetAllItems());
         }
 

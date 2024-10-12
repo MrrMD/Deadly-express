@@ -1,57 +1,53 @@
 using InventorySystem;
+using Unity.Mathematics;
+using UnityEngine;
+using Utils;
 
 public static class InventoryItemMove 
 {
     public static void MoveOneItem(Inventory inventory,int from, int to)
     {
-        if (inventory.inventory[from].Count == 0)
-        {
-            return;
-        }
+        var itemFrom = inventory.inventory[from];
+        var itemTo = inventory.inventory[to];
 
-        if (inventory.inventory[to].ItemName == "Item")
+        if (inventory.inventory[from].Count == 0) return;
+        
+
+        if (itemTo.ItemName == "Item")
         {
-            InventoryItem item = new InventoryItem(inventory.inventory[from]);
-            inventory.inventory[from].DecreaseStack(1);
-            inventory.TargetRpcInventoryItemCountChange(inventory.inventory[from].Count, from);
-            item.Count = 1;
-            inventory.inventory[to] = item;
+            itemTo = new InventoryItem(inventory.inventory[from]);
+            itemFrom.DecreaseStack(1);
+            itemTo.Count = 1;
         }
-        else if (inventory.inventory[from].ItemName == inventory.inventory[to].ItemName && inventory.inventory[to].CanStack(1))
+        else if (itemFrom.ItemName == itemTo.ItemName && itemTo.CanStack(1))
         {
-            inventory.inventory[to].IncreaseStack(1);
-            inventory.inventory[from].DecreaseStack(1);
-            inventory.TargetRpcInventoryItemCountChange(inventory.inventory[to].Count, to);
-            inventory.TargetRpcInventoryItemCountChange(inventory.inventory[from].Count, from);
+            itemTo.IncreaseStack(1);
+            itemFrom.DecreaseStack(1);
         }
-        else
-        {
-            inventory.UpdateInventoryUI();
-        }
+        inventory.inventory[to] = itemTo;
+        inventory.inventory[from] = itemFrom;
+        inventory.UpdateInventoryUI();
     }
     public static void MoveItemStack(Inventory inventory, int from, int to)
     {
+        var itemFrom = inventory.inventory[from];
+        var itemTo = inventory.inventory[to];
 
-        if (inventory.inventory[to].ItemName == "Item" || inventory.inventory[to].ItemName != inventory.inventory[from].ItemName
-            || (inventory.inventory[from].ItemName == inventory.inventory[to].ItemName && !inventory.inventory[to].CanStack(1)))
+        if (itemTo.ItemName == "Item" || itemTo.ItemName != itemFrom.ItemName
+                                      || (itemFrom.ItemName == itemTo.ItemName && !itemTo.CanStack(1)))
         {
-            InventoryItem item = inventory.inventory[from];
-            inventory.inventory[from] = inventory.inventory[to];
-            inventory.inventory[to] = item;
+            inventory.inventory[from] = itemTo;
+            inventory.inventory[to] = itemFrom;
             return;
         }
-
-        var firstitemCount = inventory.inventory[from].Count;
-
-        for (int i = 0; i < firstitemCount; i++)
+        
+        if (itemFrom.ItemName == itemTo.ItemName && inventory.inventory[to].HowMuchCanStack() > 0)
         {
-            if (inventory.inventory[from].ItemName == inventory.inventory[to].ItemName && inventory.inventory[to].CanStack(1))
-            {
-                inventory.inventory[to].IncreaseStack(1);
-                inventory.inventory[from].DecreaseStack(1);
-                inventory.TargetRpcInventoryItemCountChange(inventory.inventory[to].Count, to);
-                inventory.TargetRpcInventoryItemCountChange(inventory.inventory[from].Count, from);
-            }
+            var canStackCount = math.min(inventory.inventory[to].HowMuchCanStack(), itemFrom.Count);
+            itemTo.IncreaseStack(canStackCount);
+            itemFrom.DecreaseStack(canStackCount);
+            inventory.inventory[to] = itemTo;
+            inventory.inventory[from] = itemFrom;
         }
     }
 }
