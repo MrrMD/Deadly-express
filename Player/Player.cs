@@ -1,3 +1,4 @@
+using System;
 using InventorySystem;
 using Mirror;
 
@@ -33,6 +34,11 @@ public class Player : NetworkBehaviour
 
         base.OnStartClient();
 
+        
+    }
+
+    private void Start()
+    {
         inventory = GetComponent<Inventory>();
 
         healthSystem = GetComponent<HealthSystem>();

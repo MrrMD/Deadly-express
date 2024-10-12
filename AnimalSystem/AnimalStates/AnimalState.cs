@@ -2,7 +2,7 @@
 
 namespace AnimalSystem
 {
-    public abstract class AnimalState : NetworkBehaviour
+    public abstract class AnimalState
     {
         protected Animal animal;
         
