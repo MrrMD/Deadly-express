@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerItemSystem : NetworkBehaviour
 {
-    [SerializeField] private Player player;
+    [SerializeField] private Player.Player player;
     [SerializeField] private ItemData activeItem;
     [SerializeField] private Inventory inventory;   
 

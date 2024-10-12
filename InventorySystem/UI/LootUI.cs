@@ -41,7 +41,7 @@ public class LootUI : MonoBehaviour
     {
         Debug.Log("Loot UI open");
         lootUiIsOpen = true;
-        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.LockCamera();
+        NetworkClient.localPlayer.GetComponent<Player.Player>().PlayerCameraController.LockCamera();
         lootingInventory = inventory;
         lootPanel.SetActive(true);
         ShowLootItems();
@@ -50,7 +50,7 @@ public class LootUI : MonoBehaviour
 
     public void Close()
     {
-        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.UnlockCamera();
+        NetworkClient.localPlayer.GetComponent<Player.Player>().PlayerCameraController.UnlockCamera();
         lootingInventory.OnInventoryChangedEvent -= ShowLootItems;
         lootUiIsOpen = false;
         lootPanel.SetActive(false);
@@ -109,13 +109,13 @@ public class LootUI : MonoBehaviour
     private void OpenInventory()
     {
         isInventoryOpen = true;
-        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.LockCamera();
+        NetworkClient.localPlayer.GetComponent<Player.Player>().PlayerCameraController.LockCamera();
     }
 
     private void CloseInventory()
     {
         isInventoryOpen = false;
-        NetworkClient.localPlayer.GetComponent<Player>().PlayerCameraController.UnlockCamera();
+        NetworkClient.localPlayer.GetComponent<Player.Player>().PlayerCameraController.UnlockCamera();
     }
 
     public void OnGUI()

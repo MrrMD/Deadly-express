@@ -12,7 +12,7 @@ namespace AnimalSystem
         [SerializeField] private HealthSystem healthSystem;
         [SerializeField] private Inventory inventory;
         private NavMeshAgent agent; // NavMeshAgent для перемещения волка
-        [SerializeField] private Player player; 
+        [SerializeField] private Player.Player player; 
         [SerializeField] private AnimalState currentState;
         private Animator animator;
         private SphereCollider detectionCollider;
@@ -21,7 +21,7 @@ namespace AnimalSystem
         public NavMeshAgent Agent { get => agent; }
         public AnimalData AnimalData { get => animalData;}
         public Animator Animator { get => animator;}
-        public Player Player { get => player;}
+        public Player.Player Player { get => player;}
 
         public override void OnStartServer()
         {
@@ -60,9 +60,9 @@ namespace AnimalSystem
         {
             if(currentState.GetType() == typeof(ChaseState)) return;
             
-            if (other.GetComponent<Player>())
+            if (other.GetComponent<Player.Player>())
             {
-                player = other.GetComponent<Player>();
+                player = other.GetComponent<Player.Player>();
                 Debug.Log("Игрок обнаружен в радиусе!");
                 ChangeState(new ChaseState(this));
             }
@@ -75,7 +75,7 @@ namespace AnimalSystem
         }
 
         [Server]
-        public void TakeDamage(float value, Player from)
+        public void TakeDamage(float value, Player.Player from)
         {
             if (player == null)
             {

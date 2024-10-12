@@ -7,7 +7,7 @@ public class StaminaSystem : NetworkBehaviour
     [SyncVar(hook = nameof(OnStaminaChanged))]
     [SerializeField] private float stamina;
     [SerializeField] private const float maxStamina = 100;
-    [SerializeField] private Player player;
+    [SerializeField] private Player.Player player;
     [SerializeField] private PlayerAnimator playerAnimator;
 
     private void Start()
@@ -16,7 +16,7 @@ public class StaminaSystem : NetworkBehaviour
         {
             return;
         }
-        player = GetComponent<Player>();
+        player = GetComponent<Player.Player>();
         stamina = maxStamina;
     }
 
