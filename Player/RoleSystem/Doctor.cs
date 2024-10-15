@@ -4,7 +4,7 @@ namespace Player.RoleSystem
     public class Doctor : Role
     {
         private Player _player;
-
+        
         private void Start()
         {
             RoleName = "Doctor";

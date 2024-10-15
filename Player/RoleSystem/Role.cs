@@ -34,6 +34,12 @@ public abstract class Role : MonoBehaviour{
 
     #endregion
 
+    public Role(string roleName, Sprite abilitySprite)
+    {
+        this.roleName = roleName;
+        this.abilitySprite = abilitySprite;
+    }
+    
     internal abstract void EditPlayerData();
     internal abstract void AbilityActivate();
 }
