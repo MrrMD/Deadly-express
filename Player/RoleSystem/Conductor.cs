@@ -1,13 +1,12 @@
-
-namespace Player.RoleSystem
+﻿namespace Player.RoleSystem
 {
-    public class Doctor : Role
+    public class Conductor : Role
     {
         private Player _player;
 
         private void Start()
         {
-            RoleName = "Doctor";
+            RoleName = "Conductor";
             AbilitySprite = null;
             
             _player = GetComponent<Player>();
@@ -19,19 +18,18 @@ namespace Player.RoleSystem
 
         internal override void EditPlayerData()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Conductor)
             {
-                _player.PlayerData.HealRate *= 1.15f;
+                _player.PlayerData.StepVolumeRate *= 1.20f;
             }
         }
         
         internal override void AbilityActivate()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Conductor)
             {
-                // Вторая жизнь: Мгновенное восстановление 30% здоровья себе или союзнику
+                // Ключ от всего: Возможность взломать любой замок с 25% вероятностью
             }
         }
     }
 }
-
