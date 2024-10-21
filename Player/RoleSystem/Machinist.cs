@@ -1,13 +1,12 @@
-
-namespace Player.RoleSystem
+﻿namespace Player.RoleSystem
 {
-    public class Doctor : Role
+    public class Machinist : Role
     {
         private Player _player;
-        
+
         private void Start()
         {
-            RoleName = "Doctor";
+            RoleName = "Machinist";
             AbilitySprite = null;
             
             _player = GetComponent<Player>();
@@ -19,19 +18,18 @@ namespace Player.RoleSystem
 
         internal override void EditPlayerData()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Machinist)
             {
-                _player.PlayerData.HealRate *= 1.15f;
+                _player.PlayerData.TrainStopRate *= 1.20f;
             }
         }
         
         internal override void AbilityActivate()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Machinist)
             {
-                // Вторая жизнь: Мгновенное восстановление 30% здоровья себе или союзнику
+                // Глаз-алмаз: Видит препятсвия в радиусе 50 метров на 6 секунд
             }
         }
     }
 }
-

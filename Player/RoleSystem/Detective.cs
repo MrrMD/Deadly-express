@@ -1,13 +1,12 @@
-
-namespace Player.RoleSystem
+﻿namespace Player.RoleSystem
 {
-    public class Doctor : Role
+    public class Detective : Role
     {
         private Player _player;
-        
+
         private void Start()
         {
-            RoleName = "Doctor";
+            RoleName = "Detective";
             AbilitySprite = null;
             
             _player = GetComponent<Player>();
@@ -19,19 +18,18 @@ namespace Player.RoleSystem
 
         internal override void EditPlayerData()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Detective)
             {
-                _player.PlayerData.HealRate *= 1.15f;
+                _player.PlayerData.LuckyChance *= 1.20f;
             }
         }
         
         internal override void AbilityActivate()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Detective)
             {
-                // Вторая жизнь: Мгновенное восстановление 30% здоровья себе или союзнику
+                //  Обнаружение ловушек на 6 секунд, в радиусе 30 метров Кулдаун: 120 секунд
             }
         }
     }
 }
-

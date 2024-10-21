@@ -1,13 +1,12 @@
-
-namespace Player.RoleSystem
+﻿namespace Player.RoleSystem
 {
-    public class Doctor : Role
+    public class Sheriff : Role
     {
         private Player _player;
-        
+
         private void Start()
         {
-            RoleName = "Doctor";
+            RoleName = "Sheriff";
             AbilitySprite = null;
             
             _player = GetComponent<Player>();
@@ -19,19 +18,18 @@ namespace Player.RoleSystem
 
         internal override void EditPlayerData()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Sheriff)
             {
-                _player.PlayerData.HealRate *= 1.15f;
+                _player.PlayerData.AttackRate *= 1.10f;
             }
         }
         
         internal override void AbilityActivate()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Sheriff)
             {
-                // Вторая жизнь: Мгновенное восстановление 30% здоровья себе или союзнику
+                // Крепкий орешек: Снижение получаемого урона на 30% на 8 секунд
             }
         }
     }
 }
-
