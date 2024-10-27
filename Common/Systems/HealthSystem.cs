@@ -1,58 +1,70 @@
 using Mirror;
+using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class HealthSystem : NetworkBehaviour
+namespace Common.Systems
 {
-    [SyncVar]
-    [SerializeField] private bool isAlive;
-
-    [SyncVar(hook = nameof(OnHealthChanged))]
-    [SerializeField] private float health;
-    [SerializeField] private float maxHealth = 100;
-    [SerializeField] private PlayerAnimator playerAnimator;
-    public bool IsAlive { get => isAlive; }
-
-    private void Start()
+    public class HealthSystem : NetworkBehaviour
     {
-        health = maxHealth;
-        isAlive = true;
-    }
+        [SyncVar]
+        [SerializeField] private bool isAlive;
 
-    public float Health { get; }
-    public float MaxHealth { get; }
+        [FormerlySerializedAs("health")]
+        [SyncVar(hook = nameof(OnHealthChanged))]
+        [SerializeField] private float currentHealth;
+        [SerializeField] private float maxHealth = 100;
+        [SerializeField] private PlayerAnimator playerAnimator;
 
+        public float DamageMultiplier { get; set; } = 1f;
     
-    [Command]
-    public void CmdTakeDamage(float value)
-    {
-        health -= value;
-        isAlive = health > 0;
+        public bool IsAlive { get => isAlive; }
 
-        if (!isAlive) CmdDie();
-    }
+        private void Start()
+        {
+            currentHealth = maxHealth;
+            isAlive = true;
+        }
 
-    [Command]
-    public void CmdHeal(float amount)
-    {
-        health += amount;
-        Mathf.Clamp(health, 0, 100);
-    }
+        [Command]
+        public void CmdTakeDamage(float damage )
+        {
+            var finalDamage  = damage  * damage * DamageMultiplier;
+
+            currentHealth -= finalDamage;
+            
+            Debug.Log($"Игрок получил {finalDamage} урона, текущее здоровье: {currentHealth}");
+            
+            if (currentHealth <= 0)
+            {
+                isAlive = false;
+                TargetRpcPlayerDied();
+            }
+        }
+
+        [Command]
+        public void CmdHeal(float heal)
+        {
+            currentHealth += heal;
+            Mathf.Clamp(currentHealth, 0, 100);
+        }
 
 
-    [Command]
-    public void CmdDie()
-    {
-       Debug.Log("Object" + this.gameObject.name + " is dead");
-    }
+        [TargetRpc]
+        public void TargetRpcPlayerDied()
+        {
+            Debug.Log("Object" + this.gameObject.name + " is dead");
+        }
 
-    private void OnHealthChanged(float oldValue, float newValue)
-    {
-        Debug.Log($"Health updated from {oldValue} to {newValue}");
-        UpdateHealthText();
-    }
+        private void OnHealthChanged(float oldValue, float newValue)
+        {
+            Debug.Log($"Health updated from {oldValue} to {newValue}");
+            UpdateHealthText();
+        }
 
-    private void UpdateHealthText()
-    {
+        private void UpdateHealthText()
+        {
         
+        }
     }
 }

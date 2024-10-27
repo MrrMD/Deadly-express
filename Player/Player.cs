@@ -1,3 +1,4 @@
+using Common.Systems;
 using InventorySystem;
 using Mirror;
 using UnityEngine;
@@ -20,7 +21,6 @@ namespace Player
         [SerializeField] private PlayerItemSystem playerItemSystem;
 
         [SerializeField] private PlayerCameraController playerCameraController;
-
         [SerializeField] private HealthSystem healthSystem;
         [SerializeField] private StaminaSystem staminaSystem;
         [SerializeField] private FoodSystem foodSystem;
@@ -34,8 +34,6 @@ namespace Player
             }
 
             base.OnStartClient();
-
-        
         }
 
         private void Start()
@@ -44,8 +42,8 @@ namespace Player
 
             healthSystem = GetComponent<HealthSystem>();
             staminaSystem = GetComponent<StaminaSystem>();
-            foodSystem = GetComponent<FoodSystem>();
-            PlayerData = GetComponent<PlayerData>();
+            foodSystem = GetComponent<FoodSystem>(); 
+            //PlayerData = GetComponent<PlayerData>();
         }
 
         public HealthSystem HealthSystem { get => healthSystem;}

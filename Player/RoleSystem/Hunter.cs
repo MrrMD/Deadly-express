@@ -1,13 +1,12 @@
-
-namespace Player.RoleSystem
+﻿namespace Player.RoleSystem
 {
-    public class Doctor : Role
+    public class Hunter : Role
     {
         private Player _player;
-        
+
         private void Start()
         {
-            RoleName = "Doctor";
+            RoleName = "Hunter";
             AbilitySprite = null;
             
             _player = GetComponent<Player>();
@@ -19,19 +18,18 @@ namespace Player.RoleSystem
 
         internal override void EditPlayerData()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Hunter)
             {
-                _player.PlayerData.HealRate *= 1.15f;
+                _player.PlayerData.AnimalOpenSpeedRate *= 1.20f;
             }
         }
         
         internal override void AbilityActivate()
         {
-            if (_player.Role is Doctor)
+            if (_player.Role is Hunter)
             {
-                // Вторая жизнь: Мгновенное восстановление 30% здоровья себе или союзнику
+                // Потомственный следопыт: видит животных в радиусе 50 метров на 6 секунд 
             }
         }
     }
 }
-

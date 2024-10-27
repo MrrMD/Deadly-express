@@ -33,7 +33,7 @@ public abstract class Role : MonoBehaviour{
     }
 
     #endregion
-
+    
     internal abstract void EditPlayerData();
     internal abstract void AbilityActivate();
 }
