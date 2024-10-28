@@ -16,7 +16,6 @@ namespace Player
         [SerializeField] private Role role;
         public PlayerData PlayerData { get; private set; }
         [SerializeField] private bool isOffender;
-
         [SerializeField] private Inventory inventory;
         [SerializeField] private PlayerItemSystem playerItemSystem;
 
