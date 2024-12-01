@@ -5,14 +5,15 @@ namespace Player.AbilitySystem
     public class DamageReductionAbility : TimedEffectAbility
     {
         private Player _player;
-        private float damageReductionFactor;
-        private TimedEffectAbility _timedEffectAbilityImplementation;
+        private static string abilityName = "Damage Reduction";
+        private static float damageReductionFactor = 0.20f;
+        private static float cooldown = 180f;
+        private static float duration = 15f;
 
-        public DamageReductionAbility(Player player, float cooldown, float duration, float reductionFactor)
-            : base("Damage Reduction", null, cooldown, duration)
+        public DamageReductionAbility(Player player)
+            : base(abilityName, null, cooldown, duration)
         {
             _player = player;
-            damageReductionFactor = reductionFactor;
         }
 
         protected override void ApplyEffect()
@@ -29,7 +30,7 @@ namespace Player.AbilitySystem
 
         protected override void UseAbility()
         {
-            throw new System.NotImplementedException();
+            ActivateAbility();
         }
     }
 }
