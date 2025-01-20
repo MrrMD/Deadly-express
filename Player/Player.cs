@@ -18,7 +18,6 @@ namespace Player
         [SerializeField] private bool isOffender;
         [SerializeField] private Inventory inventory;
         [SerializeField] private PlayerItemSystem playerItemSystem;
-
         [SerializeField] private PlayerCameraController playerCameraController;
         [SerializeField] private HealthSystem healthSystem;
         [SerializeField] private StaminaSystem staminaSystem;
