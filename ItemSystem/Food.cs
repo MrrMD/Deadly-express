@@ -4,7 +4,7 @@ using UnityEngine;
 public class Food : ItemData, IUsable
 {
 
-    // Можно сделать компонент отравления, который будет находить на своем объекте ICanBePoisoning и делать isPoisoning и делать тру
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ICanBePoisoning пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ isPoisoning пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
 
     [Header("Food Settings")]
     [SerializeField] private float saturation;
@@ -14,7 +14,6 @@ public class Food : ItemData, IUsable
     [SerializeField] private float poisonTime;
     [SerializeField] private bool isShouldBeFried;
     [SerializeField] private bool isFried;
-
     public void Use()
     {
         if (isPoisoning)
