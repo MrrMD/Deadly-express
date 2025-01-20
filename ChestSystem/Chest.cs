@@ -6,7 +6,7 @@ using UnityEngine;
 
 [System.Serializable]
 [RequireComponent(typeof(Inventory))]
-public class Chest : NetworkBehaviour
+public class Chest : NetworkBehaviour, ILootable
 {
     [SerializeField] private LootTable lootTable;
     [SerializeField] private int minLootCount;

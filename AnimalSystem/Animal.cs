@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 namespace AnimalSystem
 {
-    public class Animal : NetworkBehaviour
+    public class Animal : NetworkBehaviour, ILootable
     {
         [SerializeField] private AnimalData animalData;
         [SerializeField] private HealthSystem healthSystem;
@@ -55,11 +55,10 @@ namespace AnimalSystem
             currentState = newState;
             currentState.Enter();
         }
-
         [Server]
         private void OnTriggerEnter(Collider other)
         {
-            if(currentState.GetType() == typeof(ChaseState)) return;
+            if(currentState.GetType() != typeof(PatrolState)) return;
             
             if (other.GetComponent<Player.Player>())
             {
